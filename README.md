@@ -20,15 +20,26 @@ Easy Tutorial은 다음과 같은 의존성을 가집니다.
 * https://github.com/mob-sakai/UnmaskForUGUI#installation
 
 ## Installation
-* To do
+### unitypackage를 이용한 설치
+다음 링크를 통해 `EasyTutorial.unitypackage`를 다운로드 받아 프로젝트에 직접 추가합니다. 이 방법으로 추가하는 경우 EasyTutorial 패키지는 `Assets` 폴더 하위에 위치하게 됩니다.
+* https://github.com/Excellcube/EasyTutorial/releases
+
+### Package Manager를 이용한 설치
+추후 관리가 용이하도록 Package Manager에서 git 주소를 이용해 추가하는 방법입니다. 이 방법으로 추가하는 경우 EasyTutorial 패키지는 `Packages` 폴더 하위에 위치하게 됩니다.
+1. Window > Package Manager 클릭
+1. 왼쪽 상단의 '+' 버튼 클릭 후 `Add Package from git URL` 클릭
+1. `https://github.com/Excellcube/EasyTutorial.git` 입력 후 add 버튼 클릭
 
 ## Prerequisite
 ### UI 디자인
 세부 디자인의 경우 사용자의 커스텀이 필요합니다. `EasyTutorial` prefab 하위의 `DialogTutorialPageView`와 `ActionTutorialPageView`를 직접 수정하여 원하는 디자인으로 변경합니다.
 
-### TextMesh Pro 폰트
-> 첨부된 TMPro 폰트 파일이 깨지거나 원하는 폰트가 별도로 존재하는 경우 아래와 같은 방법을 통해 TMPro를 할당해줍니다.
+### TextMesh Pro
+1. `Window > TextMeshPro > Import TMP Essential Resources`를 통해 TMPro를 위한 필수 에셋을 추가합니다.
 
+### TextMesh Pro 폰트 생성
+
+> 첨부된 TMPro 폰트 파일이 깨지거나 원하는 폰트가 별도로 존재하는 경우 아래와 같은 방법을 통해 TMPro를 할당해줍니다.
 1. `Excellcube/EasyTutorial/Prefabs` 경로의 `EasyTutorial.prefab`을 Scene의 Canvas 하위에 추가합니다.
 
     <img width="663" src="https://user-images.githubusercontent.com/104705295/198577832-204828b9-204e-424a-bfb6-e83c2259bf1c.png"/>
