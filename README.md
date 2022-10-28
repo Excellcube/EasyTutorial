@@ -24,23 +24,23 @@ Easy Tutorial은 다음과 같은 의존성을 가집니다.
 
 ## How to use
 1. `Excellcube/EasyTutorial/Prefabs` 경로의 `EasyTutorial.prefab`을 Scene의 Canvas 하위에 추가합니다.
-    <img width="663" src="https://user-images.githubusercontent.com/104705295/198577832-204828b9-204e-424a-bfb6-e83c2259bf1c.png">
+    <img width="663" src="https://user-images.githubusercontent.com/104705295/198577832-204828b9-204e-424a-bfb6-e83c2259bf1c.png"/>
 1. 구현하고자 하는 만큼 `TutorialPageData`를 추가합니다.
-<img width="511" src="https://user-images.githubusercontent.com/104705295/198594805-79ef5103-54da-4567-a66f-44e27c39c2ff.png">
+<img width="511" src="https://user-images.githubusercontent.com/104705295/198594805-79ef5103-54da-4567-a66f-44e27c39c2ff.png"/>
 
 1. 아래와 같이 원하는대로 `TutorialPageData`를 설정합니다.
-<img width="501" src="https://user-images.githubusercontent.com/104705295/198586982-ccbc0555-fcf0-4e07-9700-ae803bcb3e59.png">
+<img width="501" src="https://user-images.githubusercontent.com/104705295/198586982-ccbc0555-fcf0-4e07-9700-ae803bcb3e59.png"/>
 
-    * `Action`의 `Complete Key`는 다음과 같이 설정해줍니다.
-        ```c#
-        using Excellcube.EasyTutorial.Utils;
+* `Action`의 `Complete Key`는 다음과 같이 설정해줍니다.
+    ```c#
+    using Excellcube.EasyTutorial.Utils;
 
-        // 버튼을 눌렀을 경우 아래 메서드 실행.
-        public void PressTutorialButton()
-        {
-            TutorialEvent.Instance.Broadcast("TUTORIAL_BUTTON_02");
-        }
-        ```
+    // 버튼을 눌렀을 경우 아래 메서드 실행.
+    public void PressTutorialButton()
+    {
+        TutorialEvent.Instance.Broadcast("TUTORIAL_BUTTON_02");
+    }
+    ```
 
 1. 다음과 같이 튜토리얼이 완성 됐습니다!
 
