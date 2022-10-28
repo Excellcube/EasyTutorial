@@ -1,0 +1,19 @@
+{
+    "name": "Excellcube.EasyTutorial.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5a8659097e39e4bb89e140e6d02070e5",
+        "GUID:949393474f40f43b7b4da7e44304d193"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

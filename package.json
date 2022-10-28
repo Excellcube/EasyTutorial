@@ -1,0 +1,21 @@
+{
+    "name": "com.excellcube.easytutorial",
+    "displayName": "EasyTutorial",
+    "description": "EasyTutorial is simple tutorial generation package.",
+    "version": "0.9.0",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Excellcube/EasyTutorial.git"
+    },
+    "src": "",
+    "author": {
+        "name" : "quve",
+        "email" : "excellcube20@gmail.com",
+        "utl" : "https://github.com/Excellcube/"
+    },
+    "dependencies": {
+        "com.coffee.unmask": "https://github.com/mob-sakai/UnmaskForUGUI.git",
+        "com.unity.textmeshpro": "3.0.6"
+    }
+  }

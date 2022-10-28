@@ -1,0 +1,19 @@
+{
+    "name": "Excellcube.EasyTutorial",
+    "rootNamespace": "",
+    "references": [
+        "GUID:949393474f40f43b7b4da7e44304d193",
+        "GUID:141eb39a89c5f431db5a58733f8d71ef",
+        "GUID:e6a31f8e831f44eb2aa9659627398f5e",
+        "GUID:3041faa4c9a954cd6b7015c7882519db"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
