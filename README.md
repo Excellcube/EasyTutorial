@@ -1,7 +1,7 @@
 # Easy Tutorial
 Unity로 개발하는 게임의 튜토리얼을 쉽게 만들어줄 수 있는 Unity 패키지입니다. 대화창을 이용해 유저에게 메시지를 전달하는 `Dialog` 방식과 특정 액션의 수행을 유도하는 `Action` 방식으로 튜토리얼을 구현하는 기능을 제공합니다.
 
-<img src="https://user-images.githubusercontent.com/104705295/198575165-c4feab4f-b1ca-43a2-b2e2-5a45fd93484e.gif" width="50%"/>
+<img width="511" src="https://user-images.githubusercontent.com/104705295/198575165-c4feab4f-b1ca-43a2-b2e2-5a45fd93484e.gif"/>
 
 ## 주요 기능
 * 대화창 형식의 Dialog
@@ -22,14 +22,29 @@ Easy Tutorial은 다음과 같은 의존성을 가집니다.
 ## Installation
 * To do
 
-## How to use
+## Prerequisite
+
+> 첨부된 TMPro 폰트 파일이 깨지거나 원하는 폰트가 별도로 존재하는 경우 아래와 같은 방법을 통해 TMPro를 할당해줍니다.
+
 1. `Excellcube/EasyTutorial/Prefabs` 경로의 `EasyTutorial.prefab`을 Scene의 Canvas 하위에 추가합니다.
+
     <img width="663" src="https://user-images.githubusercontent.com/104705295/198577832-204828b9-204e-424a-bfb6-e83c2259bf1c.png"/>
+
+1. TextMeshPro를 이용하여 원하는 폰트를 TMPro용으로 생성합니다.
+
+1. Scene에 추가된 EasyTutorial내의 `TextMeshProGUI`를 찾아 원하는 TMPro 폰트로 교체합니다
+<img width="1147" alt="스크린샷 2022-10-29 오전 12 39 35" src="https://user-images.githubusercontent.com/104705295/198677793-afbcd851-e0ee-4397-a60f-20b6e5b8f162.png">
+
+## How to use
+
+
 1. 구현하고자 하는 만큼 `TutorialPageData`를 추가합니다.
-<img width="511" src="https://user-images.githubusercontent.com/104705295/198594805-79ef5103-54da-4567-a66f-44e27c39c2ff.png"/>
+
+    <img width="511" src="https://user-images.githubusercontent.com/104705295/198594805-79ef5103-54da-4567-a66f-44e27c39c2ff.png"/>
 
 1. 아래와 같이 원하는대로 `TutorialPageData`를 설정합니다.
-<img width="501" src="https://user-images.githubusercontent.com/104705295/198586982-ccbc0555-fcf0-4e07-9700-ae803bcb3e59.png"/>
+
+    <img width="501" src="https://user-images.githubusercontent.com/104705295/198586982-ccbc0555-fcf0-4e07-9700-ae803bcb3e59.png"/>
 
 * `Action`의 `Complete Key`는 다음과 같이 설정해줍니다.
     ```c#
