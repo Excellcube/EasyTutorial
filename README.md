@@ -23,7 +23,10 @@ Easy Tutorial은 다음과 같은 의존성을 가집니다.
 * To do
 
 ## Prerequisite
+### UI 디자인
+세부 디자인의 경우 사용자의 커스텀이 필요합니다. `EasyTutorial` prefab 하위의 `DialogTutorialPageView`와 `ActionTutorialPageView`를 직접 수정하여 원하는 디자인으로 변경합니다.
 
+### TextMesh Pro 폰트
 > 첨부된 TMPro 폰트 파일이 깨지거나 원하는 폰트가 별도로 존재하는 경우 아래와 같은 방법을 통해 TMPro를 할당해줍니다.
 
 1. `Excellcube/EasyTutorial/Prefabs` 경로의 `EasyTutorial.prefab`을 Scene의 Canvas 하위에 추가합니다.
