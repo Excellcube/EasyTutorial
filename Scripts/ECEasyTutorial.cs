@@ -24,20 +24,6 @@ namespace Excellcube.EasyTutorial
 
 
         /// <summary>
-        /// 튜토리얼 진행 정보를 저장. PlayerPref에 "Tutorial_XXX" 라는 형태로 저장된다.
-        /// SaveComplete가 true일 경우 PlayerPref 기반으로 튜토리얼 완려 여부를 확인한다.
-        /// SaveComplete가 false일 경우 기존의 클리어 정보를 삭제하고 PlayerPref 기반 튜토리얼 완료 여부 체크를 비활성화 한다.
-        /// </summary>
-        // [SerializeField]
-        // private bool m_SaveProgress;
-
-        /// <summary>
-        /// 각 TutorialData의 Skip 항목을 사용할 것인지 여부를 확인한다.
-        /// </summary>
-        [SerializeField]
-        private bool m_EnableSkipFlag;
-
-        /// <summary>
         /// 사용자가 Skip Tutorial 버튼을 눌렀을때 모든 튜토리얼들을 스킵하게 만드는 플래그.
         /// </summary>
         private bool m_IsSkippingAll;
@@ -201,9 +187,6 @@ namespace Excellcube.EasyTutorial
                 
                 m_CurrTutorialIndex = i;
                 m_CurrTutorialData = m_TutorialPageMakers[i].PageData;
-
-                if(m_EnableSkipFlag && m_CurrTutorialData.Skip)
-                    continue;
 
                 break;
             }

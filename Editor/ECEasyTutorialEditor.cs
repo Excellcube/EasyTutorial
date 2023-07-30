@@ -17,7 +17,6 @@ namespace Excellcube.EasyTutorial
         private SerializedProperty m_TextLocalizerProp;
         private SerializedProperty m_LocalizationTableProp;
 
-        private SerializedProperty m_EnableSkipFlagProp;
         private SerializedProperty m_TutorialPageMakersProp;
         private SerializedProperty m_OnTutorialsSkippedProp;
 
@@ -36,7 +35,6 @@ namespace Excellcube.EasyTutorial
             m_TextLocalizerProp = serializedObject.FindProperty("m_TextLocalizer");
             m_LocalizationTableProp = serializedObject.FindProperty("m_LocalizationTable");
 
-            m_EnableSkipFlagProp = serializedObject.FindProperty("m_EnableSkipFlag");
             m_TutorialPageMakersProp = serializedObject.FindProperty("m_TutorialPageMakers");
 
             m_OnTutorialsSkippedProp = serializedObject.FindProperty("m_OnTutorialsSkipped");
@@ -65,8 +63,6 @@ namespace Excellcube.EasyTutorial
             }
 
             EditorGUILayout.PropertyField(m_OnTutorialsSkippedProp);
-
-            EditorGUILayout.PropertyField(m_EnableSkipFlagProp);
 
             DrawTutorialDataList();
 
