@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
 
 using Excellcube.EasyTutorial.Widget;
 
@@ -24,12 +23,12 @@ namespace Excellcube.EasyTutorial.Page
         public  DialogArrow Arrow => m_Arrow;
 
         [SerializeField]
-        private TextMeshProUGUI m_NameText;
-        public  TextMeshProUGUI NameText => m_NameText;
+        private Text m_NameText;
+        public  Text NameText => m_NameText;
 
         [SerializeField]
-        private TextMeshProUGUI m_DialogText;
-        public  TextMeshProUGUI DialogText => m_DialogText;
+        private Text m_DialogText;
+        public  Text DialogText => m_DialogText;
 
         private UnityAction m_ClickAction;
 
@@ -73,7 +72,7 @@ namespace Excellcube.EasyTutorial.Page
             m_DialogLength = content.Length;
 
             m_DialogText.text = content;
-            m_DialogText.maxVisibleCharacters = 0;
+            // m_DialogText.maxVisibleCharacters = 0;
         }
 
         private IEnumerator RunTyping()
@@ -82,7 +81,7 @@ namespace Excellcube.EasyTutorial.Page
             {
                 yield return new WaitForSeconds(0.03f);
                 m_DialogCursurPos = m_DialogCursurPos > m_DialogLength ? m_DialogLength : m_DialogCursurPos;
-                m_DialogText.maxVisibleCharacters = m_DialogCursurPos;
+                // m_DialogText.maxVisibleCharacters = m_DialogCursurPos;
             }
         }
 
