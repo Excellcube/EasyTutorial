@@ -7,8 +7,6 @@ using Coffee.UIExtensions;
 
 namespace Excellcube.EasyTutorial.Page
 {
-    
-
     public class ActionTutorialPageView : MonoBehaviour {
         [SerializeField]
         private Text m_ActionLogText;

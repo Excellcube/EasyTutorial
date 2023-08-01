@@ -8,6 +8,10 @@ namespace Excellcube.EasyTutorial.Page
     [System.Serializable]
     public class TutorialPageData
     {
+        [SerializeField]
+        private string m_Name;
+        public string name => m_Name;
+
         protected bool m_UseLocalization;
         public  bool UseLocalization 
         {
@@ -30,36 +34,27 @@ namespace Excellcube.EasyTutorial.Page
         }
 
         [SerializeField]
-        private bool m_Skip = false;
-        public  bool Skip
-        {
-            get => m_Skip;
-        }
-
-        [SerializeField]
-        private bool m_HideSkipButton = false;
-        public  bool HideSkipButton
-        {
-            get => m_HideSkipButton;
-        }
-
-
-        [SerializeField]
         private float m_StartDelay;  // second 단위의 대기 시간 입력.
         public  float StartDelay => m_StartDelay;
 
-        [SerializeField]
-        private bool m_BlockTouchDuringDelay;
-        public  bool BlockTouchDuringDelay
-        {
-            get => m_BlockTouchDuringDelay;
-        }
 
-
+        /// <summary>
+        /// Tutorial 실행 직전에 호출되는 이벤트.
+        /// </summary>
         [SerializeField]
         private UnityEvent m_OnTutorialBegin;
         public  UnityEvent OnTutorialBegin => m_OnTutorialBegin;
 
+        /// <summary>
+        /// Tutorial 실행 직후에 호출되는 이벤트
+        /// </summary>
+        [SerializeField]
+        private UnityEvent m_OnTutorialInvoked;
+        public  UnityEvent OnTutorialInvoked => m_OnTutorialInvoked;
+
+        /// <summary>
+        /// Tutorial 종료 후 호출되는 이벤트.
+        /// </summary>
         [SerializeField]
         private UnityEvent m_OnTutorialEnded;
         public  UnityEvent OnTutorialEnded => m_OnTutorialEnded;

@@ -22,12 +22,6 @@ namespace Excellcube.EasyTutorial
         [SerializeField]
         private string m_LocalizationTable;
 
-
-        /// <summary>
-        /// 사용자가 Skip Tutorial 버튼을 눌렀을때 모든 튜토리얼들을 스킵하게 만드는 플래그.
-        /// </summary>
-        private bool m_IsSkippingAll;
-
         private int m_LastClearIndex;
         private int m_CurrTutorialIndex;
 
@@ -55,8 +49,6 @@ namespace Excellcube.EasyTutorial
         private TouchBlockView m_TouchBlockView;
         private ECSkipButton m_SkipButton;
 
-        public UnityEvent<UnityAction> m_OnTutorialsSkipped;
-
 
         private void Awake() 
         {
@@ -73,7 +65,6 @@ namespace Excellcube.EasyTutorial
 
             m_CurrTutorialIndex = 0;
             m_LastClearIndex = -1;
-            m_IsSkippingAll = false;
 
             LoadTutorialProgress();
 
@@ -96,31 +87,13 @@ namespace Excellcube.EasyTutorial
         {
             if(IsCompleteTutorial)
             {
-                SkipAllTutorials();
+                Debug.LogWarning("튜토리얼 완료. 튜토리얼 실행 방지");
             }
         }
 
         public void StartTutorial() 
         {
             StartCoroutine( ShowNextTutorials() );
-        }
-
-        public void ShowSkipTutorialAlert()
-        {
-            if(m_OnTutorialsSkipped.GetPersistentEventCount() == 0)
-            {
-                SkipAllTutorials();
-            }
-            else
-            {
-                m_OnTutorialsSkipped.Invoke(()=>SkipAllTutorials());
-            }
-        }
-
-        private void SkipAllTutorials()
-        {
-            m_IsSkippingAll = true;
-            Complete();
         }
 
         private IEnumerator ShowNextTutorials() 
@@ -131,11 +104,6 @@ namespace Excellcube.EasyTutorial
             }
 
             m_CurrTutorialData = null;
-
-            if(!m_IsSkippingAll)
-            {
-                FindNextTutorialData();
-            }
 
             // 화면 비활성화 시 화면이 깜빡거리는 현상 방지.
             yield return new WaitForEndOfFrame();
@@ -153,15 +121,9 @@ namespace Excellcube.EasyTutorial
                 yield break;
             }
 
-            // 딜레이 시간 동안 터치가 불가능한 경우.
-            if(m_CurrTutorialData.BlockTouchDuringDelay) 
-            {
-                m_TouchBlockView.gameObject.SetActive(true);
-            }
-            else
-            {
-                m_TouchBlockView.gameObject.SetActive(false);
-            }
+            // 딜레이 시간 동안 터치 제한.
+            m_TouchBlockView.gameObject.SetActive(true);
+            
 
             yield return new WaitForSeconds(m_CurrTutorialData.StartDelay);
             
@@ -172,10 +134,9 @@ namespace Excellcube.EasyTutorial
             m_CurrTutorialData.OnTutorialBegin.Invoke();
             tutorialPage.ShowUsingData(m_CurrTutorialData);
 
-            if(m_CurrTutorialData.BlockTouchDuringDelay) 
-            {
-                m_TouchBlockView.gameObject.SetActive(false);
-            }
+            m_TouchBlockView.gameObject.SetActive(false);
+
+            m_CurrTutorialData.OnTutorialInvoked.Invoke();
         }
 
         private void FindNextTutorialData()
@@ -240,8 +201,6 @@ namespace Excellcube.EasyTutorial
             {
                 Debug.LogError("[Easy Tutorial] Unsupported type of TutorialPage is detected");
             }
-
-            m_SkipButton.gameObject.SetActive(!m_CurrTutorialData.HideSkipButton);
             
             return tutorialPage;
         }

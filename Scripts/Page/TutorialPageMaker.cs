@@ -17,12 +17,14 @@ namespace Excellcube.EasyTutorial.Page
                     case PageType.Dialog : {
                         if(m_DialogPageData == null) {
                             m_DialogPageData = new DialogTutorialPageData();
+                            m_PageData = m_DialogPageData;
                         }
                         return m_DialogPageData;
                     }
                     case PageType.Action : {
                         if(m_ActionPageData == null) {
                             m_ActionPageData = new ActionTutorialPageData();
+                            m_PageData = m_ActionPageData;
                         }
                         return m_ActionPageData;
                     }
@@ -33,11 +35,15 @@ namespace Excellcube.EasyTutorial.Page
                     //     return m_DetailContentPageData;
                     // }
                     default : {
+                        m_PageData = m_DialogPageData;
                         return m_DialogPageData;
                     }
                 }
             }
         }
+
+        [SerializeField]
+        private TutorialPageData m_PageData;
 
         [SerializeField]
         private DialogTutorialPageData m_DialogPageData;
@@ -47,5 +53,14 @@ namespace Excellcube.EasyTutorial.Page
 
         [SerializeField]
         private DetailTutorialPageContentData m_DetailContentPageData;
+
+        /// <summary>
+        /// Custom Editor를 위한 Serialized Fields.
+        /// </summary>
+        [SerializeField]
+        private bool m_FoldOut;
+
+        [SerializeField]
+        private float m_PositionY;
     }
 }

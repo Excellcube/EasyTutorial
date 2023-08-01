@@ -6,44 +6,51 @@ namespace Excellcube.EasyTutorial.Page
 {
     [CustomPropertyDrawer(typeof(TutorialPageMaker))]
     public class TutorialPageMakerDrawer : PropertyDrawer {
+        private bool m_FoldOutEvents = false;
+        private float m_TotalHeight = 0;
+
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            float totalHeight = 0;
-
-            SerializedProperty pageTypeProp = property.FindPropertyRelative("m_PageType");
-            totalHeight += EditorGUI.GetPropertyHeight(pageTypeProp, true);
+            var foldOutProp   = property.FindPropertyRelative(Field.FoldOut);
+            var pageTypeProp  = property.FindPropertyRelative(Field.PageType);
 
             string propName = GetPageDataName(pageTypeProp.enumValueIndex);
+            var pageDataProp  = property.FindPropertyRelative(propName);
 
-            SerializedProperty pageDataProp;
-            pageDataProp = property.FindPropertyRelative(propName);
+            float totalHeight = 0;
+            totalHeight += EditorGUIUtility.singleLineHeight * 1.5f;          // Title Label.
+            totalHeight += EditorGUIUtility.singleLineHeight;                 // 튜토리얼 이름 영역.
+            totalHeight += EditorGUI.GetPropertyHeight(pageTypeProp, true);
             totalHeight += EditorGUI.GetPropertyHeight(pageDataProp, true);
+            totalHeight += EditorGUIUtility.singleLineHeight * 0.7f;          // margin.
 
-            return totalHeight;
+            float resultHeight = foldOutProp.boolValue ? totalHeight : EditorGUIUtility.singleLineHeight * 1.2f;
+            return resultHeight;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {                        
+        {
             EditorGUI.BeginProperty(position, label, property);
 
-            ///// Draw page type.
-
-            SerializedProperty pageTypeProp = property.FindPropertyRelative("m_PageType");
-            EditorGUI.PropertyField(position, pageTypeProp, label, true);
+            var foldOutProp  = property.FindPropertyRelative(Field.FoldOut);
+            var pageTypeProp = property.FindPropertyRelative(Field.PageType);
             
-            ///// Draw page data.
 
-            string propName = GetPageDataName(pageTypeProp.enumValueIndex);
+            if(foldOutProp.boolValue) {
+                position.y += EditorGUIUtility.singleLineHeight * 1.2f;
 
-            SerializedProperty pageDataProp;
-            pageDataProp = property.FindPropertyRelative(propName);
+                // --  페이지 타입 그리기 -- //
+                EditorGUI.PropertyField(position, pageTypeProp, new GUIContent("페이지 타입"), true);
+                position.y += EditorGUIUtility.singleLineHeight * 1.2f;
 
-            Rect pageDataPosition = position;
-            float pageTypeFieldHeight = EditorGUI.GetPropertyHeight(pageTypeProp, true);
-            pageDataPosition.position += new Vector2(0, pageTypeFieldHeight);
+                // -- 페이지 데이터 영역 그리기 -- //
+                string propName  = GetPageDataName(pageTypeProp.enumValueIndex);
+                var pageDataProp = property.FindPropertyRelative(propName);
 
-            EditorGUI.PropertyField(pageDataPosition, pageDataProp, true);
+                // 각 pageData의 property는 DialogTutorialPageDataDrawer와 ActionTutorialPageDataDrawer에 구현되어 있음.
+                EditorGUI.PropertyField(position, pageDataProp);
+            }
 
             EditorGUI.EndProperty();
         }
@@ -53,13 +60,11 @@ namespace Excellcube.EasyTutorial.Page
             switch(typeIndex)
             {
                 case 0 :
-                    return "m_DialogPageData";
+                    return Field.DialogPageData;
                 case 1 :
-                    return "m_ActionPageData";
-                case 2 :
-                    return "m_DetailContentPageData";
+                    return Field.ActionPageData;
                 default:
-                    return "m_DialogPageData";
+                    return Field.DialogPageData;
             }
         }
     }
