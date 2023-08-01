@@ -36,7 +36,6 @@ namespace Excellcube.EasyTutorial.Page
                 DrawTargetInfoArea(property);
                 DrawEventArea(property);
             }
-
             EditorGUI.indentLevel = 0;
 
             EditorGUI.EndProperty();
@@ -44,6 +43,8 @@ namespace Excellcube.EasyTutorial.Page
             float endY = m_Position.y;
             m_Height = endY - startY;
         }
+
+        // ==== 세부 구현 ==== //
 
         private void DrawTitleLabel() {
             m_Position.height = EditorGUIUtility.singleLineHeight;
@@ -96,12 +97,10 @@ namespace Excellcube.EasyTutorial.Page
 
             EditorGUI.PropertyField(m_Position, indicatorPositionProp, new GUIContent("화살표 위치"));
             m_Position.y += EditorGUI.GetPropertyHeight(indicatorPositionProp, true);
-            m_Position.y += 2.0f;
+            m_Position.y += 10.0f;
         }
 
         private void DrawEventArea(SerializedProperty property) {
-            m_Position.y += EditorGUIUtility.singleLineHeight * 0.5f;
-
             var eventFoldPositiopn = new Rect(m_Position.x, m_Position.y, 15, EditorGUIUtility.singleLineHeight);
             m_FoldOutEvents = EditorGUI.Foldout(eventFoldPositiopn, m_FoldOutEvents, new GUIContent("페이지 실행 이벤트"));
 

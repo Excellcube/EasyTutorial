@@ -8,6 +8,8 @@ namespace Excellcube.EasyTutorial.Page
     [CustomPropertyDrawer(typeof(DialogTutorialPageData))]
     public class DialogTutorialPageDataDrawer : PropertyDrawer
     {
+        private Rect m_Position;
+
         private bool m_FoldOutEvents = false;
         private float m_Height = 0;
 
@@ -18,34 +20,57 @@ namespace Excellcube.EasyTutorial.Page
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            float startY = position.y;
+            m_Position = position;
+
+            float startY = m_Position.y;
 
             EditorGUI.BeginProperty(position, label, property);
 
-            position.height = EditorGUIUtility.singleLineHeight;
-            position.y += EditorGUIUtility.singleLineHeight * 0.2f;
-
-            // Title 라벨 그리기.
-            EditorGUI.LabelField(position, "Dialog Page 정보", EditorStyles.boldLabel);
+            DrawTitleLabel();
 
             EditorGUI.indentLevel = 1;
+            {
+                DrawStartDelay(property);
+                DrawDialogInfoArea(property);
+                DrawEventArea(property);
+            }
+            EditorGUI.indentLevel = 0;
 
-            position.y += EditorGUIUtility.singleLineHeight * 1.1f;
+            EditorGUI.EndProperty();
 
+            float endY = m_Position.y;
+            m_Height = endY - startY;
+        }
 
+        
+        // ==== 세부 구현 ==== //
+
+        private void DrawTitleLabel() {
+            m_Position.height = EditorGUIUtility.singleLineHeight;
+            m_Position.y += EditorGUIUtility.singleLineHeight * 0.2f;
+
+            // Title 라벨 그리기.
+            EditorGUI.LabelField(m_Position, "Dialog Page 정보", EditorStyles.boldLabel);
+
+            m_Position.y += EditorGUIUtility.singleLineHeight * 1.1f;
+        }
+
+        private void DrawStartDelay(SerializedProperty property) {
             // StartDelay 영역 그리기.
             var startDelayProp = property.FindPropertyRelative(Field.StartDelay);
-            EditorGUI.PropertyField(position, startDelayProp, new GUIContent("시작 딜레이 (초)"));
+            EditorGUI.PropertyField(m_Position, startDelayProp, new GUIContent("시작 딜레이 (초)"));
 
-            position.y += EditorGUIUtility.singleLineHeight * 1.07f;
+            m_Position.y += EditorGUIUtility.singleLineHeight;
+            m_Position.y += 2.0f;
+        }
 
-
+        private void DrawDialogInfoArea(SerializedProperty property) {
             var leftSpriteProp = property.FindPropertyRelative(Field.LeftSprite);
-            var leftSpritePosition = position;
+            var leftSpritePosition = m_Position;
             leftSpriteProp.objectReferenceValue = EditorGUI.ObjectField(leftSpritePosition, "캐릭터 이미지", leftSpriteProp.objectReferenceValue, typeof(Sprite), false);
 
-            position.y += leftSpritePosition.height;
-            position.y += EditorGUIUtility.singleLineHeight * 0.1f;
+            m_Position.y += leftSpritePosition.height;
+            m_Position.y += EditorGUIUtility.singleLineHeight * 0.1f;
 
 
             // Character name, Dialog 영역 그리기.
@@ -53,25 +78,27 @@ namespace Excellcube.EasyTutorial.Page
                 var characterNameProp = property.FindPropertyRelative(Field.CharacterNameKey);
                 var DialogProp        = property.FindPropertyRelative(Field.DialogKey);
 
-                EditorGUI.PropertyField(position, characterNameProp, new GUIContent("캐릭터 이름 Key 값"));
-                position.y += EditorGUIUtility.singleLineHeight * 1.1f;
+                EditorGUI.PropertyField(m_Position, characterNameProp, new GUIContent("캐릭터 이름 Key 값"));
+                m_Position.y += EditorGUIUtility.singleLineHeight * 1.1f;
 
-                EditorGUI.PropertyField(position, DialogProp, new GUIContent("다이얼로그 Key 값"));
+                EditorGUI.PropertyField(m_Position, DialogProp, new GUIContent("다이얼로그 Key 값"));
             } else {
                 var characterNameProp = property.FindPropertyRelative(Field.CharacterName);
                 var DialogProp        = property.FindPropertyRelative(Field.Dialog);
 
-                EditorGUI.PropertyField(position, characterNameProp, new GUIContent("캐릭터 이름"));
-                position.y += EditorGUIUtility.singleLineHeight * 1.1f;
+                EditorGUI.PropertyField(m_Position, characterNameProp, new GUIContent("캐릭터 이름"));
+                m_Position.y += EditorGUIUtility.singleLineHeight * 1.1f;
 
-                position.height *= 3;
-                EditorGUI.PropertyField(position, DialogProp, new GUIContent("다이얼로그"));
+                m_Position.height *= 3;
+                EditorGUI.PropertyField(m_Position, DialogProp, new GUIContent("다이얼로그"));
             }
-            
-            position.y += EditorGUIUtility.singleLineHeight * 0.5f;
-            position.y += position.height;
 
-            var eventFoldPositiopn = new Rect(position.x, position.y, 15, EditorGUIUtility.singleLineHeight);
+            m_Position.y += EditorGUIUtility.singleLineHeight * 0.5f;
+            m_Position.y += m_Position.height;
+        }
+
+        private void DrawEventArea(SerializedProperty property) {
+            var eventFoldPositiopn = new Rect(m_Position.x, m_Position.y, 15, EditorGUIUtility.singleLineHeight);
             m_FoldOutEvents = EditorGUI.Foldout(eventFoldPositiopn, m_FoldOutEvents, new GUIContent("페이지 실행 이벤트"));
 
             if(m_FoldOutEvents) {
@@ -80,33 +107,26 @@ namespace Excellcube.EasyTutorial.Page
                 var eventInvokedProp = property.FindPropertyRelative(Field.OnTutorialInvoked);
                 var eventEndedProp   = property.FindPropertyRelative(Field.OnTutorialEnded);
 
-                position.y += EditorGUIUtility.singleLineHeight * 1.3f;
-                EditorGUI.PropertyField(position, eventBeginProp);
+                m_Position.y += EditorGUIUtility.singleLineHeight * 1.3f;
+                EditorGUI.PropertyField(m_Position, eventBeginProp);
 
-                position.y += EditorGUI.GetPropertyHeight(eventBeginProp, true);
-                position.y += 3.0f;
+                m_Position.y += EditorGUI.GetPropertyHeight(eventBeginProp, true);
+                m_Position.y += 3.0f;
 
-                EditorGUI.PropertyField(position, eventInvokedProp);
+                EditorGUI.PropertyField(m_Position, eventInvokedProp);
 
-                position.y += EditorGUI.GetPropertyHeight(eventInvokedProp, true);
-                position.y += 3.0f;
+                m_Position.y += EditorGUI.GetPropertyHeight(eventInvokedProp, true);
+                m_Position.y += 3.0f;
 
-                EditorGUI.PropertyField(position, eventEndedProp);
+                EditorGUI.PropertyField(m_Position, eventEndedProp);
 
-                position.y += EditorGUI.GetPropertyHeight(eventEndedProp, true);
-                position.y += 3.0f;
+                m_Position.y += EditorGUI.GetPropertyHeight(eventEndedProp, true);
+                m_Position.y += 3.0f;
             } else {
                 // position y 기반으로 전체 높이를 추정.
                 // 하단부의 마진이 거의 없는 관계로 한 줄의 마진 추가.
-                position.y += EditorGUIUtility.singleLineHeight * 1.5f;
+                m_Position.y += EditorGUIUtility.singleLineHeight * 1.5f;
             }
-
-            EditorGUI.indentLevel = 0;
-
-            EditorGUI.EndProperty();
-
-            float endY = position.y;
-            m_Height = endY - startY;
         }
     }
 }
