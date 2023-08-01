@@ -190,6 +190,16 @@ namespace Excellcube.EasyTutorial
         public const string CharacterNameKey = "m_CharacterNameKey";
         public const string Dialog           = "m_Dialog";
         public const string DialogKey        = "m_DialogKey";
+
+
+        // -- Action Tutorial Page Data -- //
+        public const string ActionLog         = "m_ActionLog";
+        public const string ActionLogKey      = "m_ActionLogKey";
+        public const string HighlightTarget   = "m_HighlightTarget";
+        public const string DynamicTargetRoot = "m_DynamicTargetRoot";
+        public const string DynamicTargetKey  = "m_DynamicTargetKey";
+        public const string IndicatorPosition = "m_IndicatorPosition";
+        public const string CompleteKey       = "m_CompleteKey";
     }
 }
 #endif
