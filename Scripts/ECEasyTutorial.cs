@@ -3,6 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+// 사용 편의를 위해 namespace가 없는 ECEasyTutorial 클래스 제공.
+public class Tutorial {
+    private static Excellcube.EasyTutorial.ECEasyTutorial[] m_AllTutorials;
+    private static Dictionary<string, int> m_KeyValues = new Dictionary<string, int>();
+
+    public static bool IsComplete(string key) {
+        if(m_AllTutorials == null) {
+            m_AllTutorials = GameObject.FindObjectsOfType<Excellcube.EasyTutorial.ECEasyTutorial>();
+        }
+
+        // 모든 튜토리얼을 클리어 했는지 검사.
+        bool isCompleteAllTutorials = true;
+        foreach(var tutorial in m_AllTutorials) {
+            bool isClearTutorial = Excellcube.EasyTutorial.ECEasyTutorial.IsCompleteTutorial(tutorial.key);
+            isCompleteAllTutorials &= isClearTutorial;
+        }
+
+        // 이미 모든 튜터리얼을 클리어 했다면 종료.
+        if(isCompleteAllTutorials) {
+            return true;
+        }
+
+        // 아직 모든 튜토리얼 클리어 전이라면 해당 튜토리얼 클리어 여부 조사.
+        return Excellcube.EasyTutorial.ECEasyTutorial.IsCompleteTutorial(key);
+    }
+
+    public static void Complete(string key) {
+        Excellcube.EasyTutorial.Utils.TutorialEvent.Instance.Broadcast(key);
+    }
+
+    public static int GetValue(string key) {
+        int result;
+        if(m_KeyValues.TryGetValue(key, out result)) {
+            return result;
+        } else {
+            return 0;
+        }
+    }
+
+    public static void SetValue(string key, int value) {
+        m_KeyValues[key] = value;
+    }
+}
+
 namespace Excellcube.EasyTutorial
 {
     using Page;
@@ -12,6 +56,13 @@ namespace Excellcube.EasyTutorial
 
     public class ECEasyTutorial : MonoBehaviour
     {
+        /// <summary>
+        /// 튜토리얼 종류를 구분하는 키값. 튜토리얼마다 고유해야함. 키값을 이용하여 튜토리얼 별로 클리어 여부를 구별한다.
+        /// </summary>
+        [SerializeField]
+        private string m_Key = "";
+        public string key => m_Key;
+
         [SerializeField]
         private bool m_PlayOnAwake = true;
         [SerializeField]
@@ -38,12 +89,22 @@ namespace Excellcube.EasyTutorial
         private DetailTutorialPage m_DetailTutorialPage;
 
         private TutorialPageData m_CurrTutorialData = null;
-        
-        static public  bool IsCompleteTutorial
+
+        public static bool IsCompleteTutorial(string key)
         {
-            get {
-                return (PlayerPrefs.GetInt("ECET_CLEAR_ALL", 0) == 1);
-            }
+            #if UNITY_EDITOR
+            // Editor에서는 항상 튜토리얼을 보여준다.
+            return false;
+            #else
+            return (PlayerPrefs.GetInt($"ECET_CLEAR_{key}", 0) == 1);
+            #endif
+        }
+
+        public static void SetClearTutorial(string key)
+        {
+            #if !UNITY_EDITOR
+            PlayerPrefs.SetInt($"ECET_CLEAR_{key}", 1);
+            #endif
         }
 
         private TouchBlockView m_TouchBlockView;
@@ -68,7 +129,7 @@ namespace Excellcube.EasyTutorial
 
             LoadTutorialProgress();
 
-            if(!IsCompleteTutorial)
+            if(!IsCompleteTutorial(m_Key))
             {
                 if(m_PlayOnAwake)
                 {
@@ -85,7 +146,7 @@ namespace Excellcube.EasyTutorial
 
         private void LoadTutorialProgress()
         {
-            if(IsCompleteTutorial)
+            if(IsCompleteTutorial(m_Key))
             {
                 Debug.LogWarning("튜토리얼 완료. 튜토리얼 실행 방지");
             }
@@ -98,12 +159,15 @@ namespace Excellcube.EasyTutorial
 
         private IEnumerator ShowNextTutorials() 
         {
-            if(IsCompleteTutorial)
+            if(IsCompleteTutorial(m_Key))
             {
                 yield break;
             }
 
             m_CurrTutorialData = null;
+
+            // 다음 튜토리얼 데이터가 있는지 탐색.
+            FindNextTutorialData();
 
             // 화면 비활성화 시 화면이 깜빡거리는 현상 방지.
             yield return new WaitForEndOfFrame();
@@ -115,7 +179,7 @@ namespace Excellcube.EasyTutorial
             if(m_CurrTutorialData == null)
             {
                 Debug.LogWarning("[Easy Tutorial] Complete all tutorials");
-                PlayerPrefs.SetInt("ECET_CLEAR_ALL", 1);
+                SetClearTutorial(m_Key);
                 TutorialEvent.Instance.UnlistenAll();
                 Destroy(gameObject);
                 yield break;
@@ -124,7 +188,6 @@ namespace Excellcube.EasyTutorial
             // 딜레이 시간 동안 터치 제한.
             m_TouchBlockView.gameObject.SetActive(true);
             
-
             yield return new WaitForSeconds(m_CurrTutorialData.StartDelay);
             
             InitLocalizer();
@@ -132,6 +195,8 @@ namespace Excellcube.EasyTutorial
             TutorialPage tutorialPage = CreateTutorialPage();
 
             m_CurrTutorialData.OnTutorialBegin.Invoke();
+
+            Debug.Log("[ECEasyTutorial] 튜토리얼 출력 : " + m_CurrTutorialData.name);
             tutorialPage.ShowUsingData(m_CurrTutorialData);
 
             m_TouchBlockView.gameObject.SetActive(false);
