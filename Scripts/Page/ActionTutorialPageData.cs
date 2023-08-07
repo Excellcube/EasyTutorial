@@ -7,7 +7,7 @@ namespace Excellcube.EasyTutorial.Page
     [System.Serializable]
     public enum IndicatorPosition
     {
-        TOP, BOTTOM
+        NONE, TOP, BOTTOM, LEFT, RIGHT
     }
 
     [System.Serializable]
@@ -31,8 +31,8 @@ namespace Excellcube.EasyTutorial.Page
 
 
         [SerializeField]
-        private RectTransform m_HighlightTarget;
-        public  RectTransform HighlightTarget
+        private Transform m_HighlightTarget;
+        public  Transform HighlightTarget
         {
             get => m_HighlightTarget;
             set => m_HighlightTarget = value;
@@ -51,6 +51,14 @@ namespace Excellcube.EasyTutorial.Page
         [SerializeField]
         private IndicatorPosition m_IndicatorPosition = IndicatorPosition.TOP;
         public  IndicatorPosition IndicatorPosition => m_IndicatorPosition;
+
+
+        /// <summary>
+        /// 투명한 색의 터치 불가능 영역을 사용하는지 여부를 설정.
+        /// </summary>
+        [SerializeField]
+        private bool m_UseTransparentBlockScreen = false;
+        public  bool UseTransparentBlockScreen => m_UseTransparentBlockScreen;
 
 
         [SerializeField]

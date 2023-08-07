@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Excellcube.EasyTutorial;
 
 namespace Excellcube.EasyTutorial.Widget
 {
@@ -27,32 +28,36 @@ namespace Excellcube.EasyTutorial.Widget
             m_IsRunning = false;
         }
 
-        public void Place(RectTransform target, bool placeOnTop)
+        public void Place(RectTransform target, bool placeOnRight)
         {
             float targetWidth = target.sizeDelta.x;
             float targetHeight = target.sizeDelta.y;
             float indicatorHeight = m_RectTransform.sizeDelta.y;
             float margin = 20;
 
-            float indicatordist = targetHeight / 2 + indicatorHeight / 2 + margin;
+            float indicatordist = (targetHeight / 2 + indicatorHeight / 2 + margin) * target.lossyScale.x;
 
             Vector3 position = target.position;
-            Quaternion rotation;
+            Quaternion rotation = Quaternion.identity;
+            Vector3 scale;
 
-            if(placeOnTop)
+            if(placeOnRight)
             {
-                position.y += indicatordist;
-                rotation = Quaternion.identity;
+                position.x += indicatordist;
+                position.y -= indicatordist;
+                scale = Vector3.one;
             }
             else
             {
+                position.x -= indicatordist;
                 position.y -= indicatordist;
-                rotation = Quaternion.Euler(0, 0, 180.0f);
+                scale = new Vector3(-1, 1, 1);
             }
 
             m_RectTransform.gameObject.SetActive(true);
             m_RectTransform.position = position;
             m_RectTransform.localRotation = rotation;
+            m_RectTransform.localScale = scale;
         }
 
         public void Show(RectTransform target)

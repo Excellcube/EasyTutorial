@@ -39,7 +39,7 @@ namespace Excellcube.EasyTutorial
 
             m_TutorialPageMakersProp = serializedObject.FindProperty(Field.TutorialPageMaker);
 
-            m_TutorialPageMakersRO = new ReorderableList(serializedObject, m_TutorialPageMakersProp, true, false, true, true);
+            m_TutorialPageMakersRO = new ReorderableList(serializedObject, m_TutorialPageMakersProp, true, true, true, true);
             m_TutorialPageMakersRO.drawHeaderCallback = OnDrawTutorialDataListHeader;
             m_TutorialPageMakersRO.drawElementCallback = OnDrawTutorialDataListItems;
             m_TutorialPageMakersRO.elementHeightCallback = delegate(int index) {
@@ -83,7 +83,7 @@ namespace Excellcube.EasyTutorial
 
         private void OnDrawTutorialDataListHeader(Rect rect)
         {
-            EditorGUI.LabelField(rect, "Tutorial Page Data", EditorStyles.boldLabel);
+            EditorGUI.LabelField(rect, "튜토리얼 페이지 데이터");
         }
 
         private void OnDrawTutorialDataListItems(Rect rect, int index, bool isActive, bool isFocused)
@@ -101,6 +101,16 @@ namespace Excellcube.EasyTutorial
             foldoutRect.y += 1;
 
             m_FoldoutStates[index] = EditorGUI.Foldout(new Rect(foldoutRect.x, foldoutRect.y, 15, EditorGUIUtility.singleLineHeight), m_FoldoutStates[index], GUIContent.none);
+
+            // 특정 foldout이 true일 경우 나머지는 전부 false로 처리.
+            if(m_FoldoutStates[index]) {
+                int foldOutIndex = index;
+                for(int i=0 ; i<m_FoldoutStates.Length ; i++) {
+                    m_FoldoutStates[i] = false;
+                }
+                m_FoldoutStates[foldOutIndex] = true;
+            }
+
             foldOutProp.boolValue = m_FoldoutStates[index];
 
 
@@ -108,10 +118,9 @@ namespace Excellcube.EasyTutorial
             
             GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
             {
-                fontSize = 15,
                 fontStyle = FontStyle.Bold
             };
-            GUIContent labelContent = new GUIContent($"STEP {index + 1} - {pageNameProp.stringValue}");
+            GUIContent labelContent = new GUIContent($"{index + 1}. {pageNameProp.stringValue}");
 
             Rect labelRect = new Rect(foldoutRect.x + 10, foldoutRect.y, rect.width, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(labelRect, labelContent, labelStyle);

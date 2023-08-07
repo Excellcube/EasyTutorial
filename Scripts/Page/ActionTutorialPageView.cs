@@ -19,5 +19,9 @@ namespace Excellcube.EasyTutorial.Page
         [SerializeField]
         private Unmask m_UnmaskPanel;
         public  Unmask UnmaskPanel => m_UnmaskPanel;
+
+        [SerializeField]
+        private Image m_BlockScreenImage;
+        public  Image BlockScreenImage => m_BlockScreenImage;
     }
 }

@@ -611,15 +611,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d80a6cbe648458d899c985895bcd49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Key: 
   m_PlayOnAwake: 1
   m_UseLocalization: 0
   m_TextLocalizer: {fileID: 0}
   m_LocalizationTable: 
-  m_EnableSkipFlag: 0
   m_TutorialPageMakers: []
-  m_OnTutorialsSkipped:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &5810936324218589148
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +762,7 @@ MonoBehaviour:
   m_ActionLogText: {fileID: 5810936324280929011}
   m_Indicator: {fileID: 5538944481133936981}
   m_UnmaskPanel: {fileID: 5810936325826088953}
+  m_BlockScreenImage: {fileID: 5810936324218589121}
 --- !u!1 &5810936324280928973
 GameObject:
   m_ObjectHideFlags: 0
