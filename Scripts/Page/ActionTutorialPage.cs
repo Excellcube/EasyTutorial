@@ -66,7 +66,7 @@ namespace Excellcube.EasyTutorial.Page
             }
 
             // 튜토리얼 페이지 완료 조건에 해당하는 이벤트 등록.
-            TutorialEvent.Instance.Listen(data.CompleteKey, this, ()=>{
+            TutorialEvent.Instance.Listen(data.conditionKey.ToString(), this, ()=>{
                 TutorialEvent.Instance.UnlistenAll();
                 if(m_CompleteTutorial == null)
                 {
@@ -264,51 +264,34 @@ namespace Excellcube.EasyTutorial.Page
         private void SearchDynamicHighlightTarget(ref ActionTutorialPageData data) 
         {
             if(data.HighlightTarget == null)
-            {
-                if(data.DynamicTargetRoot != null)
+            {                
+                if(FindTarget(ref data))
                 {
-                    // 지정 대상 내에 TutorialSelectionTarget이 존재하는지 확인.
-                    if(FindTarget(ref data, false))
-                    {
-                        return;
-                    }
-
-                    // 지정 대상 내에 TutorialSelectionTarget이 존재하지 않을 경우 전체 탐색으로 확인.
-                    if(FindTarget(ref data, true))
-                    {
-                        return;
-                    }
-
-                    Debug.LogWarning($"[ActionTutorialPage] 탐색된 TutorialSelectionTarget의 리스트 내에서 DynamicTargetKey({data.DynamicTargetKey})에 해당하는 TutorialSelectionTarget을 찾을 수 없음");
+                    return;
                 }
+
+                Debug.LogWarning($"[ActionTutorialPage] 탐색된 TutorialSelectionTarget의 리스트 내에서 DynamicTargetKey({data.DynamicTargetKey})에 해당하는 TutorialSelectionTarget을 찾을 수 없음");
             }
         }
 
-        private bool FindTarget(ref ActionTutorialPageData data, bool global)
+        private bool FindTarget(ref ActionTutorialPageData data)
         {
             var key = data.DynamicTargetKey;
 
+            Transform target;
 
-            // 주어진 대상 혹은 전체 탐색으로 TutorialSelectionTarget이 존재하는지 확인.
-            TutorialSelectionTarget[] targets;
-            if(global) {
-                targets = GameObject.FindObjectsOfType<TutorialSelectionTarget>();
-            } else {
-                targets = data.DynamicTargetRoot.GetComponentsInChildren<TutorialSelectionTarget>();
-            }
-
-            // 탐색된 TutorialSelectionTarget 내에서 TutorialAction의 Key값에 해당하는 대상을 탐색.
-            var targetList = new List<TutorialSelectionTarget>(targets);
-            var target = targetList.Find(e => e.Key == key);
-            if(target != null)
+            if(data.DynamicTargetRoot != null)
             {
-                data.HighlightTarget = target.transform;
-                return true;
+                target = data.DynamicTargetRoot.Find(data.DynamicTargetKey);
             }
             else
             {
-                return false;
+                target = GameObject.Find(data.DynamicTargetKey)?.transform;
             }
+
+            data.HighlightTarget = target;
+
+            return data.HighlightTarget != null;
         }
     }
 }

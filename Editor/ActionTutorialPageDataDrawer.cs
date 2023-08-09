@@ -34,6 +34,7 @@ namespace Excellcube.EasyTutorial.Page
                 DrawStartDelay(property);
                 DrawActionLog(property);
                 DrawTargetInfoArea(property);
+                DrawConditionKey(property);
                 DrawEventArea(property);
             }
             EditorGUI.indentLevel = 0;
@@ -97,6 +98,14 @@ namespace Excellcube.EasyTutorial.Page
 
             EditorGUI.PropertyField(m_Position, indicatorPositionProp, new GUIContent("화살표 위치"));
             m_Position.y += EditorGUI.GetPropertyHeight(indicatorPositionProp, true);
+            m_Position.y += 2.0f;
+        }
+
+        private void DrawConditionKey(SerializedProperty property) {
+            var conditionKeyProp = property.FindPropertyRelative(Field.ConditionKey);
+
+            EditorGUI.PropertyField(m_Position, conditionKeyProp, new GUIContent("페이지 완료 조건"));
+            m_Position.y += EditorGUI.GetPropertyHeight(conditionKeyProp, true);
             m_Position.y += 10.0f;
         }
 

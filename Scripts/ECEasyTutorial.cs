@@ -3,47 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-// 사용 편의를 위해 namespace가 없는 ECEasyTutorial 클래스 제공.
-public class Tutorial {
-    private static Excellcube.EasyTutorial.ECEasyTutorial[] m_AllTutorials;
-    private static Dictionary<string, int> m_KeyValues = new Dictionary<string, int>();
+// 사용 편의를 위해 최소한의 namespace를 갖는 Tutorial 클래스 제공.
+namespace Excellcube
+{
+    public class Tutorial {
+        private static EasyTutorial.ECEasyTutorial[] m_AllTutorials;
+        private static Dictionary<string, int> m_KeyValues = new Dictionary<string, int>();
 
-    public static bool IsComplete(string key) {
-        if(m_AllTutorials == null) {
-            m_AllTutorials = GameObject.FindObjectsOfType<Excellcube.EasyTutorial.ECEasyTutorial>();
+        public static bool IsComplete(string key) {
+            if(m_AllTutorials == null) {
+                m_AllTutorials = GameObject.FindObjectsOfType<EasyTutorial.ECEasyTutorial>();
+            }
+
+            // 모든 튜토리얼을 클리어 했는지 검사.
+            bool isCompleteAllTutorials = true;
+            foreach(var tutorial in m_AllTutorials) {
+                bool isClearTutorial = EasyTutorial.ECEasyTutorial.IsCompleteTutorial(tutorial.key);
+                isCompleteAllTutorials &= isClearTutorial;
+            }
+
+            // 이미 모든 튜터리얼을 클리어 했다면 종료.
+            if(isCompleteAllTutorials) {
+                return true;
+            }
+
+            // 아직 모든 튜토리얼 클리어 전이라면 해당 튜토리얼 클리어 여부 조사.
+            return EasyTutorial.ECEasyTutorial.IsCompleteTutorial(key);
         }
 
-        // 모든 튜토리얼을 클리어 했는지 검사.
-        bool isCompleteAllTutorials = true;
-        foreach(var tutorial in m_AllTutorials) {
-            bool isClearTutorial = Excellcube.EasyTutorial.ECEasyTutorial.IsCompleteTutorial(tutorial.key);
-            isCompleteAllTutorials &= isClearTutorial;
+        public static void Complete(ConditionKey key) {
+            EasyTutorial.Utils.TutorialEvent.Instance.Broadcast(key.ToString());
         }
 
-        // 이미 모든 튜터리얼을 클리어 했다면 종료.
-        if(isCompleteAllTutorials) {
-            return true;
+        public static int GetValue(string key) {
+            int result;
+            if(m_KeyValues.TryGetValue(key, out result)) {
+                return result;
+            } else {
+                return 0;
+            }
         }
 
-        // 아직 모든 튜토리얼 클리어 전이라면 해당 튜토리얼 클리어 여부 조사.
-        return Excellcube.EasyTutorial.ECEasyTutorial.IsCompleteTutorial(key);
-    }
-
-    public static void Complete(string key) {
-        Excellcube.EasyTutorial.Utils.TutorialEvent.Instance.Broadcast(key);
-    }
-
-    public static int GetValue(string key) {
-        int result;
-        if(m_KeyValues.TryGetValue(key, out result)) {
-            return result;
-        } else {
-            return 0;
+        public static void SetValue(string key, int value) {
+            m_KeyValues[key] = value;
         }
-    }
-
-    public static void SetValue(string key, int value) {
-        m_KeyValues[key] = value;
     }
 }
 
@@ -90,6 +93,8 @@ namespace Excellcube.EasyTutorial
 
         private TutorialPageData m_CurrTutorialData = null;
 
+        private MaskImages m_MaskImages;
+
         public static bool IsCompleteTutorial(string key)
         {
             #if UNITY_EDITOR
@@ -119,6 +124,8 @@ namespace Excellcube.EasyTutorial
             m_DialogTutorialPageView = GetComponentInChildren<DialogTutorialPageView>(true);
             m_ActionTutorialPageView = GetComponentInChildren<ActionTutorialPageView>(true);
             // m_DetailTutorialPageView = GetComponentInChildren<DetailTutorialPageView>(true);
+
+            m_MaskImages = GetComponentInChildren<MaskImages>(true);
 
             m_DialogTutorialPage = new DialogTutorialPage(m_DialogTutorialPageView);
             m_ActionTutorialPage = new ActionTutorialPage(m_ActionTutorialPageView);
@@ -196,7 +203,8 @@ namespace Excellcube.EasyTutorial
 
             m_CurrTutorialData.OnTutorialBegin.Invoke();
 
-            Debug.Log("[ECEasyTutorial] 튜토리얼 출력 : " + m_CurrTutorialData.name);
+            Debug.Log("[ECEasyTutorial] 튜토리얼 출력 : " + m_CurrTutorialData.Name);
+            Debug.Log("[ECEasyTutorial] 페이지 타입  : " + m_CurrTutorialData.StartDelay);
             tutorialPage.ShowUsingData(m_CurrTutorialData);
 
             m_TouchBlockView.gameObject.SetActive(false);
@@ -255,6 +263,7 @@ namespace Excellcube.EasyTutorial
 
                 m_ActionTutorialPage.CompleteTutorial = Complete;
                 m_ActionTutorialPageView.gameObject.SetActive(true);
+                m_ActionTutorialPage.MaskImages = m_MaskImages;
             }
             // else if(type == typeof(DetailTutorialPageContentData)) 
             // {
@@ -282,6 +291,11 @@ namespace Excellcube.EasyTutorial
             m_LastClearIndex = m_CurrTutorialIndex;
             m_CurrTutorialData?.OnTutorialEnded.Invoke();
             StartCoroutine( ShowNextTutorials() );
+        }
+
+        public void Complete(ConditionKey key)
+        {
+            Utils.TutorialEvent.Instance.Broadcast(key.ToString());
         }
     }
 }

@@ -209,6 +209,7 @@ namespace Excellcube.EasyTutorial
         public const string DynamicTargetKey  = "m_DynamicTargetKey";
         public const string IndicatorPosition = "m_IndicatorPosition";
         public const string CompleteKey       = "m_CompleteKey";
+        public const string ConditionKey      = "m_ConditionKey";
     }
 }
 #endif

@@ -10,7 +10,7 @@ namespace Excellcube.EasyTutorial.Page
     {
         [SerializeField]
         private string m_Name;
-        public string name => m_Name;
+        public string Name => m_Name;
 
         protected bool m_UseLocalization;
         public  bool UseLocalization 

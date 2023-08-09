@@ -64,5 +64,9 @@ namespace Excellcube.EasyTutorial.Page
         [SerializeField]
         private string m_CompleteKey;
         public  string CompleteKey => m_CompleteKey;
+
+        [SerializeField]
+        private ConditionKey m_ConditionKey;
+        public ConditionKey conditionKey => m_ConditionKey;
     }
 }
