@@ -95,35 +95,21 @@ namespace Excellcube.EasyTutorial.Page
                 Vector2 position = Camera.main.WorldToScreenPoint(target.transform.position);
 
                 // MaskImage의 위치와 크기를 target에 맞게 갱신.
-                RectTransform rectTransform = m_MaskImages.GetComponent<RectTransform>();
+                RectTransform maskRectTrasnform = m_MaskImages.GetComponent<RectTransform>();
 
                 if(canvas.renderMode == RenderMode.WorldSpace) {
-                    rectTransform.position = position;
-                    rectTransform.sizeDelta = target.sizeDelta * canvas.scaleFactor;
+                    maskRectTrasnform.position = position;
+                    maskRectTrasnform.sizeDelta = target.sizeDelta * canvas.scaleFactor;
                 } else {
-                    m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
-                    var unmaskRT = m_View.UnmaskPanel.GetComponent<RectTransform>();
-
-                    unmaskRT.pivot = new Vector2(0.5f, 0.5f);
-                    Vector2 unmaskSize = target.sizeDelta * target.localScale.x * canvas.scaleFactor;
-                    Vector3 targetAnchorMin = target.anchorMin;
-                    Vector3 targetAnchorMax = target.anchorMax;
-
-                    float scaledWidth = unmaskSize.x;
-                    float scaledHeight = unmaskSize.y;
-
-                    // float canvasScaleFactor = rectTransform.lossyScale.x;
-
-                    // unmaskRT.position = rectTransform.position;
-                    rectTransform.position = position;
-                    rectTransform.position += new Vector3((0.5f - target.pivot.x) * scaledWidth, (0.5f - target.pivot.y) * scaledHeight, 0);
-
-                    rectTransform.sizeDelta = target.sizeDelta;
+                    // RenderMode.ScreenSpaceCamera에서 동작.
+                    maskRectTrasnform.anchorMin = target.anchorMin;
+                    maskRectTrasnform.anchorMax = target.anchorMax;
+                    maskRectTrasnform.position = target.position;
+                    maskRectTrasnform.sizeDelta = target.sizeDelta;
                 }
 
-                FitUnmaskToMaskImage(rectTransform);
-                ShowIndicator(rectTransform, indicatorPosition);
-
+                FitUnmaskToMaskImage(maskRectTrasnform);
+                ShowIndicator(maskRectTrasnform, indicatorPosition);
             } else {
                 HighlightTargetOnOverlayCanvas(target, indicatorPosition);
             }
@@ -223,12 +209,13 @@ namespace Excellcube.EasyTutorial.Page
             float canvasScaleFactor = maskImageRT.lossyScale.x;
 
             unmaskRT.position = maskImageRT.position;
-            unmaskRT.position += new Vector3((0.5f - targetAnchorMin.x) * scaledWidth * canvasScaleFactor, (0.5f - targetAnchorMin.y) * scaledHeight * canvasScaleFactor, 0);
+
+            // Mask 영역을 focusing하는 용도. 이 부분은 언제 사용하지?
+            // unmaskRT.position += new Vector3((0.5f - targetAnchorMin.x) * scaledWidth * canvasScaleFactor, (0.5f - targetAnchorMin.y) * scaledHeight * canvasScaleFactor, 0);
 
             float startScale = maskImageScale.x * 1.3f;
             float endScale = maskImageScale.x;
-            // unmaskRT.localScale = new Vector3(startScale, startScale, startScale);
-            // unmaskRT.DOScale(endScale, 0.2f);
+
             unmaskRT.localScale = new Vector3(endScale, endScale, endScale);
         }
 
