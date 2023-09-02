@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     [System.Serializable]
     public class DialogTutorialPageData : TutorialPageData 

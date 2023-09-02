@@ -1,4 +1,4 @@
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public enum PageType
     {

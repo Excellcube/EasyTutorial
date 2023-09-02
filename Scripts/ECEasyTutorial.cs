@@ -32,7 +32,7 @@ namespace Excellcube
         }
 
         public static void Complete(ConditionKey key) {
-            EasyTutorial.Utils.TutorialEvent.Instance.Broadcast(key.ToString());
+            EasyTutorial.TutorialEvent.Instance.Broadcast(key.ToString());
         }
 
         public static int GetValue(string key) {
@@ -52,11 +52,6 @@ namespace Excellcube
 
 namespace Excellcube.EasyTutorial
 {
-    using Page;
-    using Utils;
-    using Widget;
-    using UI;
-
     public class ECEasyTutorial : MonoBehaviour
     {
         /// <summary>
@@ -72,7 +67,7 @@ namespace Excellcube.EasyTutorial
         private bool m_UseLocalization;
 
         [SerializeField]
-        private Utils.TextLocalizer m_TextLocalizer;
+        private TextLocalizer m_TextLocalizer;
         [SerializeField]
         private string m_LocalizationTable;
 
@@ -296,7 +291,7 @@ namespace Excellcube.EasyTutorial
 
         public void Complete(ConditionKey key)
         {
-            Utils.TutorialEvent.Instance.Broadcast(key.ToString());
+            TutorialEvent.Instance.Broadcast(key.ToString());
         }
     }
 }

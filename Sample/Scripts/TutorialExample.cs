@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Excellcube.EasyTutorial.Utils;
-
 namespace Excellcube.EasyTutorial {
     public class TutorialExample : MonoBehaviour
     {

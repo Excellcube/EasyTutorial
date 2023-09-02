@@ -706,6 +706,7 @@ MonoBehaviour:
   m_UseLocalization: 0
   m_TextLocalizer: {fileID: 0}
   m_LocalizationTable: 
+  m_CurrTutorialIndex: -1
   m_TutorialPageMakers: []
 --- !u!1 &5810936324218589148
 GameObject:
@@ -870,7 +871,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5810936324280928972
 RectTransform:
   m_ObjectHideFlags: 0

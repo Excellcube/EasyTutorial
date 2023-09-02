@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
-using Excellcube.EasyTutorial.Page;
-
 namespace Excellcube.EasyTutorial
 {
     [CustomEditor(typeof(ECEasyTutorial))]
@@ -91,7 +89,7 @@ namespace Excellcube.EasyTutorial
             var foldOutProp   = elemProp.FindPropertyRelative(Field.FoldOut);
             var yPositionProp = elemProp.FindPropertyRelative(Field.PositionY);
             var pageNameProp  = pageDataProp.FindPropertyRelative(Field.Name);
-            
+
             DrawCurrTutorialOutline(rect, index);
 
             // -- Foldout 영역 그리기 -- //

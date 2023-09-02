@@ -5,9 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using Excellcube.EasyTutorial.Widget;
-
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public class DialogTutorialPageView : MonoBehaviour, IPointerClickHandler {
         [SerializeField]

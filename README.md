@@ -94,7 +94,7 @@ Easy Tutorial은 다음과 같은 의존성을 가집니다.
     ```c#
     using UnityEngine.Localization.Settings;
 
-    namespace Excellcube.EasyTutorial.Utils {
+    namespace Excellcube.EasyTutorial {
         public class UnityTextLocalizer : TextLocalizer
         {
             public override string GetLocalizedText(string table, string key)

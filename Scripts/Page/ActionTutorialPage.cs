@@ -4,10 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-using Excellcube.EasyTutorial.Utils;
-using Excellcube.EasyTutorial.Widget;
-
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public class ActionTutorialPage : TutorialPage 
     {
@@ -91,7 +88,7 @@ namespace Excellcube.EasyTutorial.Page
         /// <summary>
         /// Canvas 상의 오브젝트를 하이라이팅 할 때 사용하는 메서드.
         /// </summary>
-        private void HighlightTargetOnCanvas(RectTransform target, Page.IndicatorPosition indicatorPosition)
+        private void HighlightTargetOnCanvas(RectTransform target, IndicatorPosition indicatorPosition)
         {
             // target이 위치한 Canvas.
             Canvas targetCanvas = target.GetComponentInParent<Canvas>();
@@ -135,7 +132,7 @@ namespace Excellcube.EasyTutorial.Page
         /// <summary>
         /// 3D 공간 상의 오브젝트를 하이라이팅 할 때 사용하는 메서드
         /// </summary>
-        private void HighlightTargetInScene(Transform target, Page.IndicatorPosition indicatorPosition) 
+        private void HighlightTargetInScene(Transform target, IndicatorPosition indicatorPosition) 
         {
             // 1. target 하위의 MeshRenderer들을 가져온다.
             MeshRenderer[] meshRenderers = target.GetComponentsInChildren<MeshRenderer>();
@@ -189,14 +186,14 @@ namespace Excellcube.EasyTutorial.Page
             HighlightTargetOnOverlayCanvas(rectTransform, indicatorPosition);
         }
 
-        private void HighlightTargetOnOverlayCanvas(RectTransform maskImageRT, Page.IndicatorPosition indicatorPosition) 
+        private void HighlightTargetOnOverlayCanvas(RectTransform maskImageRT, IndicatorPosition indicatorPosition) 
         {
             m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
             FitUnmaskToMaskImage(maskImageRT);
             ShowIndicator(maskImageRT, indicatorPosition);
         }
 
-        private void ShowIndicator(RectTransform maskImageRT, Page.IndicatorPosition indicatorPosition)
+        private void ShowIndicator(RectTransform maskImageRT, IndicatorPosition indicatorPosition)
         {
             if(indicatorPosition == IndicatorPosition.NONE) {
                 m_View.Indicator.gameObject.SetActive(false);

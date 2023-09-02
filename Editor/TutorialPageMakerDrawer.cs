@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     [CustomPropertyDrawer(typeof(TutorialPageMaker))]
     public class TutorialPageMakerDrawer : PropertyDrawer {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public class DetailTutorialPageView : MonoBehaviour {
         [SerializeField]

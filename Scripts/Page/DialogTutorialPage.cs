@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Excellcube.EasyTutorial.Utils;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public class DialogTutorialPage : TutorialPage 
     {

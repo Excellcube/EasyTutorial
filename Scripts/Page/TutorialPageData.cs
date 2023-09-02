@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     [System.Serializable]
     public class TutorialPageData
@@ -19,8 +19,8 @@ namespace Excellcube.EasyTutorial.Page
             set => m_UseLocalization = value;   
         }
 
-        protected Utils.TextLocalizer m_TextLocalizer;
-        public  Utils.TextLocalizer TextLocalizer
+        protected TextLocalizer m_TextLocalizer;
+        public  TextLocalizer TextLocalizer
         {
             get => m_TextLocalizer;
             set => m_TextLocalizer = value;

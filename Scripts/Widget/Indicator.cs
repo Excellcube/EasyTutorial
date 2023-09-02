@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Excellcube.EasyTutorial;
 
-namespace Excellcube.EasyTutorial.Widget
+namespace Excellcube.EasyTutorial
 {
     public class Indicator : MonoBehaviour
     {

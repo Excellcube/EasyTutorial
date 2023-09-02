@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 using Coffee.UIExtensions;
 
-namespace Excellcube.EasyTutorial.Page
+namespace Excellcube.EasyTutorial
 {
     public class ActionTutorialPageView : MonoBehaviour {
         [SerializeField]
@@ -13,8 +13,8 @@ namespace Excellcube.EasyTutorial.Page
         public  Text ActionLogText => m_ActionLogText;
 
         [SerializeField]
-        private Widget.Indicator m_Indicator;
-        public  Widget.Indicator Indicator => m_Indicator;
+        private Indicator m_Indicator;
+        public  Indicator Indicator => m_Indicator;
 
         [SerializeField]
         private Unmask m_UnmaskPanel;
