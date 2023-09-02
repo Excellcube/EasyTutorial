@@ -15,16 +15,13 @@ namespace Excellcube.EasyTutorial
         private SerializedProperty m_UseLocalizationProp;
         private SerializedProperty m_TextLocalizerProp;
         private SerializedProperty m_LocalizationTableProp;
+        private SerializedProperty m_CurrTutorialIndexProp;
 
         private SerializedProperty m_TutorialPageMakersProp;
 
         private ReorderableList m_TutorialPageMakersRO;
 
         private bool[] m_FoldoutStates; // 각 요소의 foldout 상태를 추적하는 배열
-
-
-
-        private int m_CurrSelectedIndex = -1;
 
 
         private void OnEnable() 
@@ -36,6 +33,7 @@ namespace Excellcube.EasyTutorial
             m_UseLocalizationProp = serializedObject.FindProperty(Field.UseLocalization);
             m_TextLocalizerProp = serializedObject.FindProperty(Field.TextLocalizer);
             m_LocalizationTableProp = serializedObject.FindProperty(Field.LocalizationTable);
+            m_CurrTutorialIndexProp = serializedObject.FindProperty(Field.CurrTutorialIndex);
 
             m_TutorialPageMakersProp = serializedObject.FindProperty(Field.TutorialPageMaker);
 
@@ -93,7 +91,8 @@ namespace Excellcube.EasyTutorial
             var foldOutProp   = elemProp.FindPropertyRelative(Field.FoldOut);
             var yPositionProp = elemProp.FindPropertyRelative(Field.PositionY);
             var pageNameProp  = pageDataProp.FindPropertyRelative(Field.Name);
-
+            
+            DrawCurrTutorialOutline(rect, index);
 
             // -- Foldout 영역 그리기 -- //
             Rect foldoutRect = rect;
@@ -151,6 +150,19 @@ namespace Excellcube.EasyTutorial
             EditorGUI.PropertyField (rect, elemProp);
         }
 
+        private void DrawCurrTutorialOutline(Rect rect, int index)
+        {
+            if (index == m_CurrTutorialIndexProp.intValue)  // 특정 인덱스인 경우, 배경색과 아웃라인을 변경합니다.
+            {
+                int thickness = 2;
+                Color color = new Color32(54, 129, 186, 255);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, thickness), color);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y + rect.height - thickness, rect.width, thickness), color);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y, thickness, rect.height), color);
+                EditorGUI.DrawRect(new Rect(rect.x + rect.width - thickness, rect.y, thickness, rect.height), color);
+            }
+        }
+
         private PageType GetPageType(int typeIndex)
         {
             switch(typeIndex)
@@ -175,6 +187,7 @@ namespace Excellcube.EasyTutorial
         public const string UseLocalization = "m_UseLocalization";
         public const string TextLocalizer = "m_TextLocalizer";
         public const string LocalizationTable = "m_LocalizationTable";
+        public const string CurrTutorialIndex = "m_CurrTutorialIndex";
         public const string TutorialPageMaker = "m_TutorialPageMakers";
         public const string PageData = "m_PageData";
         public const string DialogPageData = "m_DialogPageData";

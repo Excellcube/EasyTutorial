@@ -28,6 +28,8 @@ namespace Excellcube.EasyTutorial.Page
 
         int[] m_PrefLayerIds;
 
+        private RenderMode m_RenderMode;
+
 
         public ActionTutorialPage(ActionTutorialPageView view)
         {
@@ -52,11 +54,12 @@ namespace Excellcube.EasyTutorial.Page
             m_View.ActionLogText.text = data.ActionLog;
             if(data.HighlightTarget != null)    
             {
+                // 현재 구현은 메인 UI 카메라가 ScreenSpaceOverlay 모드일 경우.
                 if(data.HighlightTarget is RectTransform) {
                     RectTransform targetRectTrans = data.HighlightTarget as RectTransform;
-                    HighlightTarget(targetRectTrans, data.IndicatorPosition);                    
+                    HighlightTargetOnCanvas(targetRectTrans, data.IndicatorPosition);                    
                 } else {
-                    HighlightTarget(data.HighlightTarget, m_MaskImages, data.IndicatorPosition);
+                    HighlightTargetInScene(data.HighlightTarget, data.IndicatorPosition);
                 }
             }
             else
@@ -85,38 +88,54 @@ namespace Excellcube.EasyTutorial.Page
             }
         }
 
-        // Canvas가 World space에 있는 경우.
-        private void HighlightTarget(RectTransform target, Page.IndicatorPosition indicatorPosition)
+        /// <summary>
+        /// Canvas 상의 오브젝트를 하이라이팅 할 때 사용하는 메서드.
+        /// </summary>
+        private void HighlightTargetOnCanvas(RectTransform target, Page.IndicatorPosition indicatorPosition)
         {
-            Canvas canvas = target.GetComponentInParent<Canvas>();
+            // target이 위치한 Canvas.
+            Canvas targetCanvas = target.GetComponentInParent<Canvas>();
+            RectTransform maskRectTrasnform = m_MaskImages.GetComponent<RectTransform>();
+            Vector2 position = Camera.main.WorldToScreenPoint(target.transform.position);
+            
+            if(targetCanvas.renderMode == RenderMode.ScreenSpaceOverlay) 
+            {
+                HighlightTargetOnOverlayCanvas(target, indicatorPosition);
+            }
+            else if(targetCanvas.renderMode == RenderMode.ScreenSpaceCamera)
+            {
+                m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
+                var unmaskRT = m_View.UnmaskPanel.GetComponent<RectTransform>();
 
-            if(canvas.renderMode != RenderMode.ScreenSpaceOverlay) {
-                
-                Vector2 position = Camera.main.WorldToScreenPoint(target.transform.position);
+                unmaskRT.pivot = new Vector2(0.5f, 0.5f);
+                Vector2 unmaskSize = target.sizeDelta * target.localScale.x * targetCanvas.scaleFactor;
+                Vector3 targetAnchorMin = target.anchorMin;
+                Vector3 targetAnchorMax = target.anchorMax;
 
-                // MaskImage의 위치와 크기를 target에 맞게 갱신.
-                RectTransform maskRectTrasnform = m_MaskImages.GetComponent<RectTransform>();
+                float scaledWidth = unmaskSize.x;
+                float scaledHeight = unmaskSize.y;
 
-                if(canvas.renderMode == RenderMode.WorldSpace) {
-                    maskRectTrasnform.position = position;
-                    maskRectTrasnform.sizeDelta = target.sizeDelta * canvas.scaleFactor;
-                } else {
-                    // RenderMode.ScreenSpaceCamera에서 동작.
-                    maskRectTrasnform.anchorMin = target.anchorMin;
-                    maskRectTrasnform.anchorMax = target.anchorMax;
-                    maskRectTrasnform.position = target.position;
-                    maskRectTrasnform.sizeDelta = target.sizeDelta;
-                }
+                // float canvasScaleFactor = rectTransform.lossyScale.x;
+
+                // unmaskRT.position = rectTransform.position;
+                maskRectTrasnform.position = position;
+                maskRectTrasnform.position += new Vector3((0.5f - target.pivot.x) * scaledWidth, (0.5f - target.pivot.y) * scaledHeight, 0);
+
+                maskRectTrasnform.sizeDelta = target.sizeDelta;
 
                 FitUnmaskToMaskImage(maskRectTrasnform);
                 ShowIndicator(maskRectTrasnform, indicatorPosition);
-            } else {
-                HighlightTargetOnOverlayCanvas(target, indicatorPosition);
+            }
+            else
+            {
+                Debug.LogError("World Space의 캔버스를 대상으로 highlight를 적용하는 기능은 구현되지 않았음");
             }
         }
 
-        // scene 내의 3d 오브젝트 등을 대해 하이라이트.
-        private void HighlightTarget(Transform target, MaskImages maskImage, Page.IndicatorPosition indicatorPosition) 
+        /// <summary>
+        /// 3D 공간 상의 오브젝트를 하이라이팅 할 때 사용하는 메서드
+        /// </summary>
+        private void HighlightTargetInScene(Transform target, Page.IndicatorPosition indicatorPosition) 
         {
             // 1. target 하위의 MeshRenderer들을 가져온다.
             MeshRenderer[] meshRenderers = target.GetComponentsInChildren<MeshRenderer>();
@@ -161,7 +180,7 @@ namespace Excellcube.EasyTutorial.Page
                 }
             }
 
-            RectTransform rectTransform =  maskImage.GetComponent<RectTransform>();
+            RectTransform rectTransform =  m_MaskImages.GetComponent<RectTransform>();
             rectTransform.position = new Vector3((maxX + minX) / 2.0f, (maxY + minY) / 2.0f, 1);
             rectTransform.sizeDelta = new Vector3((maxX - minX) / rectTransform.lossyScale.x, (maxY - minY) / rectTransform.lossyScale.x, 1);
 
@@ -191,32 +210,32 @@ namespace Excellcube.EasyTutorial.Page
         private void FitUnmaskToMaskImage(RectTransform maskImageRT)
         {
             m_View.UnmaskPanel.FitTo(maskImageRT);
-            m_View.UnmaskPanel.transform.localScale = Vector3.one;
+            // m_View.UnmaskPanel.transform.localScale = Vector3.one;
 
-            // var maskImageScale = maskImageRT.lossyScale;
-            var maskImageScale = Vector3.one;
+            // // var maskImageScale = maskImageRT.lossyScale;
+            // var maskImageScale = Vector3.one;
 
-            var unmaskRT = m_View.UnmaskPanel.GetComponent<RectTransform>();
+            // var unmaskRT = m_View.UnmaskPanel.GetComponent<RectTransform>();
 
-            unmaskRT.pivot = new Vector2(0.5f, 0.5f);
-            Vector2 unmaskSize = unmaskRT.sizeDelta;
-            Vector3 targetAnchorMin = maskImageRT.anchorMin;
-            Vector3 targetAnchorMax = maskImageRT.anchorMax;
+            // unmaskRT.pivot = new Vector2(0.5f, 0.5f);
+            // Vector2 unmaskSize = unmaskRT.sizeDelta;
+            // Vector3 targetAnchorMin = maskImageRT.anchorMin;
+            // Vector3 targetAnchorMax = maskImageRT.anchorMax;
 
-            float scaledWidth = unmaskSize.x * maskImageScale.x;
-            float scaledHeight = unmaskSize.y * maskImageScale.y;
+            // float scaledWidth = unmaskSize.x * maskImageScale.x;
+            // float scaledHeight = unmaskSize.y * maskImageScale.y;
 
-            float canvasScaleFactor = maskImageRT.lossyScale.x;
+            // float canvasScaleFactor = maskImageRT.lossyScale.x;
 
-            unmaskRT.position = maskImageRT.position;
+            // unmaskRT.position = maskImageRT.position;
 
-            // Mask 영역을 focusing하는 용도. 이 부분은 언제 사용하지?
-            // unmaskRT.position += new Vector3((0.5f - targetAnchorMin.x) * scaledWidth * canvasScaleFactor, (0.5f - targetAnchorMin.y) * scaledHeight * canvasScaleFactor, 0);
+            // // Mask 영역을 focusing하는 용도. 이 부분은 언제 사용하지?
+            // // unmaskRT.position += new Vector3((0.5f - targetAnchorMin.x) * scaledWidth * canvasScaleFactor, (0.5f - targetAnchorMin.y) * scaledHeight * canvasScaleFactor, 0);
 
-            float startScale = maskImageScale.x * 1.3f;
-            float endScale = maskImageScale.x;
+            // float startScale = maskImageScale.x * 1.3f;
+            // float endScale = maskImageScale.x;
 
-            unmaskRT.localScale = new Vector3(endScale, endScale, endScale);
+            // unmaskRT.localScale = new Vector3(endScale, endScale, endScale);
         }
 
         private void SavePrevLayerIds(MeshRenderer[] meshRenderers)

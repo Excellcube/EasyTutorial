@@ -77,7 +77,8 @@ namespace Excellcube.EasyTutorial
         private string m_LocalizationTable;
 
         private int m_LastClearIndex;
-        private int m_CurrTutorialIndex;
+        [SerializeField]
+        private int m_CurrTutorialIndex = -1;
 
         private DialogTutorialPageView m_DialogTutorialPageView;
         private ActionTutorialPageView m_ActionTutorialPageView;
@@ -131,7 +132,7 @@ namespace Excellcube.EasyTutorial
             m_ActionTutorialPage = new ActionTutorialPage(m_ActionTutorialPageView);
             // m_DetailTutorialPage = new DetailTutorialPage(m_DetailTutorialPageView);
 
-            m_CurrTutorialIndex = 0;
+            m_CurrTutorialIndex = -1;
             m_LastClearIndex = -1;
 
             LoadTutorialProgress();
