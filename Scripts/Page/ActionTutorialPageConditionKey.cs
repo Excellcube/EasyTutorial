@@ -8,7 +8,8 @@ namespace Excellcube
     [SerializeField]
     public enum ConditionKey
     {
-        PRESS_BUTTON_1,
-        PRESS_BUTTON_2
+
+        TapScreen,
+        PressButton,
     }
 }

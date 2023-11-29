@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Data.Common;
 
 namespace Excellcube.EasyTutorial
 {
@@ -42,11 +43,64 @@ namespace Excellcube.EasyTutorial
                 return;
             }
 
+            ConsistCompletionChecker(data);
+        }
+
+        /// <summary>
+        ///   튜토리얼 페이지 종료 환경을 구성
+        /// </summary>
+        private void ConsistCompletionChecker(ActionTutorialPageData data)
+        {
+            switch(data.conditionKey)
+            {
+                case ConditionKey.TapScreen :
+                    ConsistTapScreenTutorial(data);
+                    break;
+                case ConditionKey.PressButton :
+                    ConsistPressButtonTutorial(data);
+                    break;
+            }
+        }
+
+
+#region -- TapScreen 튜토리얼 구성 --
+
+        private void ConsistTapScreenTutorial(ActionTutorialPageData data)
+        {
+            m_View.ActionLogText.text = data.ActionLog;
+            m_View.TapScreenTarget.gameObject.SetActive(true);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
+            m_View.Indicator.gameObject.SetActive(false);
+
+            m_View.AddClickAction(TouchView);
+        }
+
+        private void TouchView()
+        {
+            if(m_CompleteTutorial == null)
+            {
+                Debug.LogError("[ActionTutorialPage] CompleteTutorial UnityAction isn't assigned!");
+            }
+            
+            m_CompleteTutorial();
+        }
+#endregion
+
+
+#region -- PressButton 튜토리얼 구성 --
+
+        private void ConsistPressButtonTutorial(ActionTutorialPageData data)
+        {
             // Block 영역 투명 여부 설정.
             ApplyBlockImageTransparency();
 
             // Highlight target 탐색.
             SearchDynamicHighlightTarget(ref data);
+
+            // TapScreen 반응 영역 비활성화.
+            m_View.TapScreenTarget.gameObject.SetActive(false);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
+            m_View.Indicator.gameObject.SetActive(true);
 
             m_View.ActionLogText.text = data.ActionLog;
             if(data.HighlightTarget != null)    
@@ -199,7 +253,7 @@ namespace Excellcube.EasyTutorial
                 m_View.Indicator.gameObject.SetActive(false);
             } else {
                 m_View.Indicator.gameObject.SetActive(true);
-                m_View.Indicator.Place(maskImageRT, indicatorPosition == IndicatorPosition.RIGHT);
+                m_View.Indicator.Place(maskImageRT);
                 m_View.Indicator.Show(maskImageRT);
             }
         }
@@ -296,5 +350,8 @@ namespace Excellcube.EasyTutorial
 
             return data.HighlightTarget != null;
         }
+        
+#endregion
+
     }
 }

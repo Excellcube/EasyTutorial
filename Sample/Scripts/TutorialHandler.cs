@@ -7,7 +7,7 @@ namespace Excellcube
     public class TutorialHandler : MonoBehaviour
     {
         public void InvokePressButton() {
-            Tutorial.Complete(ConditionKey.PRESS_BUTTON_1);
+            Tutorial.Complete(ConditionKey.PressButton);
         }
     }
 }

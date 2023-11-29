@@ -35,7 +35,7 @@ namespace Excellcube.EasyTutorial
 
             var foldOutProp  = property.FindPropertyRelative(Field.FoldOut);
             var pageTypeProp = property.FindPropertyRelative(Field.PageType);
-            
+
 
             if(foldOutProp.boolValue) {
                 position.y += EditorGUIUtility.singleLineHeight * 1.2f;

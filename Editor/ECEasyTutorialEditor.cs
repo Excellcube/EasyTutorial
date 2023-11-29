@@ -86,11 +86,15 @@ namespace Excellcube.EasyTutorial
         {
             var elemProp      = m_TutorialPageMakersRO.serializedProperty.GetArrayElementAtIndex(index);
             var pageDataProp  = elemProp.FindPropertyRelative(Field.PageData);
+            var pageTypeProp  = elemProp.FindPropertyRelative(Field.PageType);
             var foldOutProp   = elemProp.FindPropertyRelative(Field.FoldOut);
             var yPositionProp = elemProp.FindPropertyRelative(Field.PositionY);
             var pageNameProp  = pageDataProp.FindPropertyRelative(Field.Name);
 
             DrawCurrTutorialOutline(rect, index);
+
+            // -- 페이지 타입에 맞는 색상 설정 -- //
+            ChangeBackgroundColor(pageTypeProp.enumValueIndex);
 
             // -- Foldout 영역 그리기 -- //
             Rect foldoutRect = rect;
@@ -112,12 +116,14 @@ namespace Excellcube.EasyTutorial
 
 
             // -- Label 영역 그리기 -- //
+
+            string typeName = pageTypeProp.enumNames[pageTypeProp.enumValueIndex];
             
             GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
             {
                 fontStyle = FontStyle.Bold
             };
-            GUIContent labelContent = new GUIContent($"{index + 1}. {pageNameProp.stringValue}");
+            GUIContent labelContent = new GUIContent($"{index + 1}. {pageNameProp.stringValue} - {typeName}");
 
             Rect labelRect = new Rect(foldoutRect.x + 10, foldoutRect.y, rect.width, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(labelRect, labelContent, labelStyle);
@@ -146,6 +152,8 @@ namespace Excellcube.EasyTutorial
             // -- 튜토리얼 데이터 영역 그리기 -- //
 
             EditorGUI.PropertyField (rect, elemProp);
+
+            GUI.color = Color.white;
         }
 
         private void DrawCurrTutorialOutline(Rect rect, int index)
@@ -173,6 +181,18 @@ namespace Excellcube.EasyTutorial
                 //     return PageType.Detail;
                 default:
                     return PageType.Dialog;
+            }
+        }
+
+        private void ChangeBackgroundColor(int pageType)
+        {
+            if(pageType == 0)
+            {
+                GUI.color = new Color32(255, 255, 200, 255);
+            }
+            else
+            {
+                GUI.color = new Color32(200, 255, 255, 255);
             }
         }
     }

@@ -10,11 +10,17 @@ namespace Excellcube.EasyTutorial
         public float m_MovingDistance;
         public float m_Duration;
 
+        private Canvas m_Canvas;
+        private RectTransform m_CanvasRT;
         private RectTransform m_RectTransform;
         private bool m_IsRunning;
 
+        private RectTransform m_TargetRT;
+
         private void Awake() 
         {
+            m_Canvas = GetComponentInParent<Canvas>();
+            m_CanvasRT = m_Canvas.GetComponent<RectTransform>();
             m_RectTransform = GetComponent<RectTransform>();    
         }
 
@@ -28,36 +34,64 @@ namespace Excellcube.EasyTutorial
             m_IsRunning = false;
         }
 
-        public void Place(RectTransform target, bool placeOnRight)
+        /// <summary>
+        /// Indicator를 target에 배치. 화면 중앙을 기준으로 target을 향해 indicator가 배치 된다.
+        /// </summary>
+        /// <param name="target"></param>
+        public void Place(RectTransform target)
         {
+            m_TargetRT = target;
+
             float targetWidth = target.sizeDelta.x;
             float targetHeight = target.sizeDelta.y;
             float indicatorHeight = m_RectTransform.sizeDelta.y;
             float margin = 20;
 
-            float indicatordist = (targetHeight / 2 + indicatorHeight / 2 + margin) * target.lossyScale.x;
+            float indicatorDestination = (targetHeight / 2 + indicatorHeight / 2 + margin) * target.lossyScale.x;
 
-            Vector3 position = target.position;
-            Quaternion rotation = Quaternion.identity;
-            Vector3 scale;
+            // Vector3 position = target.position;
+            // Quaternion rotation = Quaternion.identity;
+            // Vector3 scale;
 
-            if(placeOnRight)
+            // Indicator가 배치 될 때의 방향을 구한다.
+            float canvasWidth  = Screen.width;
+            float canvasHeight = Screen.height;
+
+            Vector2 centerPosition = new Vector2(canvasWidth / 2.0f, canvasHeight / 2.0f);
+            Vector2 targetPosition = new Vector2(target.position.x, target.position.y);
+            Vector3 direction = (targetPosition - centerPosition).normalized;
+            Vector3 indicatorHeadDirection = new Vector2(0, -1);
+            float angle = Vector3.Angle(indicatorHeadDirection, direction);
+
+            if(targetPosition.x < centerPosition.x) 
             {
-                position.x += indicatordist;
-                position.y -= indicatordist;
-                scale = Vector3.one;
+                m_RectTransform.rotation = Quaternion.Euler(0, 0, -angle);
             }
             else
             {
-                position.x -= indicatordist;
-                position.y -= indicatordist;
-                scale = new Vector3(-1, 1, 1);
+                m_RectTransform.rotation = Quaternion.Euler(0, 0, angle);
             }
 
-            m_RectTransform.gameObject.SetActive(true);
-            m_RectTransform.position = position;
-            m_RectTransform.localRotation = rotation;
-            m_RectTransform.localScale = scale;
+            m_RectTransform.position = targetPosition;
+
+            // if(placeOnRight)
+            // {
+            //     position.x += indicatordist;
+            //     position.y -= indicatordist;
+            //     scale = Vector3.one;
+            // }
+            // else
+            // {
+            //     position.x -= indicatordist;
+            //     position.y -= indicatordist;
+            //     scale = new Vector3(-1, 1, 1);
+            // }
+
+            // m_RectTransform.gameObject.SetActive(true);
+            // m_RectTransform.position = position;
+            // m_RectTransform.localRotation = rotation;
+
+            // m_RectTransform.localScale = scale;
         }
 
         public void Show(RectTransform target)
@@ -100,6 +134,29 @@ namespace Excellcube.EasyTutorial
                 else if(accumTime <= 0)
                     toDest = true;
             }
+        }
+
+        void OnDrawGizmos()
+        {
+            if(m_TargetRT == null)
+            {
+                return;
+            }
+
+            if(m_RectTransform == null)
+            {
+                m_RectTransform = GetComponent<RectTransform>();
+            }
+            Vector3 indicatorPosition = m_RectTransform.TransformPoint(Vector3.zero);
+            Vector3 targetPosition = m_TargetRT.TransformPoint(Vector3.zero);
+
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawSphere(indicatorPosition, 10f);
+            Gizmos.DrawSphere(targetPosition, 10f);
+
+            // // 또는 라인, 큐브 등을 그릴 수 있습니다.
+            Gizmos.DrawLine(indicatorPosition, targetPosition);
         }
     }
 }
