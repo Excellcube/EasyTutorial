@@ -30,6 +30,10 @@ namespace Excellcube.EasyTutorial
         private Image m_TapScreenTarget;
         public  Image TapScreenTarget => m_TapScreenTarget;
 
+        [SerializeField]
+        private Button m_CompleteButton;
+        public  Button CompleteButton => m_CompleteButton;
+
         private UnityAction m_ClickAction;
 
 

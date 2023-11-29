@@ -11,5 +11,7 @@ namespace Excellcube
 
         TapScreen,
         PressButton,
+        WaitCondition,
+        ListenEvent
     }
 }

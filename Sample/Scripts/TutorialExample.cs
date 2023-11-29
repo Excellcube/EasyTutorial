@@ -7,12 +7,12 @@ namespace Excellcube.EasyTutorial {
     {
         public void PressTutorialButton()
         {
-            TutorialEvent.Instance.Broadcast("TUTORIAL_BUTTON_01");
+            Debug.Log("첫 번째 버튼 터치");
         }
 
         public void PressTutorialButton2()
         {
-            TutorialEvent.Instance.Broadcast("TUTORIAL_BUTTON_02");
+            Debug.Log("두 번째 버튼 터치");
         }
     }
 }

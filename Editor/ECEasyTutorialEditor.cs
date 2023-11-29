@@ -241,6 +241,7 @@ namespace Excellcube.EasyTutorial
         public const string IndicatorPosition = "m_IndicatorPosition";
         public const string CompleteKey       = "m_CompleteKey";
         public const string ConditionKey      = "m_ConditionKey";
+        public const string OnClickButton     = "m_OnClickButton";
     }
 }
 #endif

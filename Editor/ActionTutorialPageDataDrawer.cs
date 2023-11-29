@@ -105,8 +105,29 @@ namespace Excellcube.EasyTutorial
             var conditionKeyProp = property.FindPropertyRelative(Field.ConditionKey);
 
             EditorGUI.PropertyField(m_Position, conditionKeyProp, new GUIContent("페이지 완료 조건"));
+
             m_Position.y += EditorGUI.GetPropertyHeight(conditionKeyProp, true);
             m_Position.y += 10.0f;
+
+            switch(conditionKeyProp.enumValueIndex)
+            {
+                // TapScreen
+                case 0 :
+                    break;
+                // PressButton
+                case 1 :
+                    DrawConditionPressButtonEvent(property);
+                    break;
+            }
+        }
+
+        private void DrawConditionPressButtonEvent(SerializedProperty property) {
+            var onClickProp = property.FindPropertyRelative(Field.OnClickButton);
+
+            EditorGUI.PropertyField(m_Position, onClickProp);
+
+            m_Position.y += EditorGUI.GetPropertyHeight(onClickProp, true);
+            m_Position.y += 3.0f;
         }
 
         private void DrawEventArea(SerializedProperty property) {

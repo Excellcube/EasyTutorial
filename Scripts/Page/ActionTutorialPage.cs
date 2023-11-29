@@ -71,6 +71,7 @@ namespace Excellcube.EasyTutorial
             m_View.TapScreenTarget.gameObject.SetActive(true);
             m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
             m_View.Indicator.gameObject.SetActive(false);
+            m_View.CompleteButton.gameObject.SetActive(false);
 
             m_View.AddClickAction(TouchView);
         }
@@ -91,16 +92,20 @@ namespace Excellcube.EasyTutorial
 
         private void ConsistPressButtonTutorial(ActionTutorialPageData data)
         {
+            // TapScreen 반응 영역 비활성화.
+            m_View.TapScreenTarget.gameObject.SetActive(false);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
+            m_View.Indicator.gameObject.SetActive(true);
+            m_View.CompleteButton.gameObject.SetActive(true);
+
+            // CompleteButton 이벤트 등록.
+            RegisterCompleteButtonEvent(data.onClickButton);
+            
             // Block 영역 투명 여부 설정.
             ApplyBlockImageTransparency();
 
             // Highlight target 탐색.
             SearchDynamicHighlightTarget(ref data);
-
-            // TapScreen 반응 영역 비활성화.
-            m_View.TapScreenTarget.gameObject.SetActive(false);
-            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
-            m_View.Indicator.gameObject.SetActive(true);
 
             m_View.ActionLogText.text = data.ActionLog;
             if(data.HighlightTarget != null)    
@@ -120,14 +125,23 @@ namespace Excellcube.EasyTutorial
             }
 
             // 튜토리얼 페이지 완료 조건에 해당하는 이벤트 등록.
-            TutorialEvent.Instance.Listen(data.conditionKey.ToString(), this, ()=>{
-                TutorialEvent.Instance.UnlistenAll();
-                if(m_CompleteTutorial == null)
-                {
-                    Debug.LogError("[ActionTutorialPage] CompleteTutorial UnityAction isn't assigned!");
-                }
-                LoadPrevLayerIds(data.HighlightTarget);
-                m_CompleteTutorial();
+            // TutorialEvent.Instance.Listen(data.conditionKey.ToString(), this, ()=>{
+            //     TutorialEvent.Instance.UnlistenAll();
+            //     if(m_CompleteTutorial == null)
+            //     {
+            //         Debug.LogError("[ActionTutorialPage] CompleteTutorial UnityAction isn't assigned!");
+            //     }
+            //     LoadPrevLayerIds(data.HighlightTarget);
+            //     m_CompleteTutorial();
+            // });
+        }
+
+        private void RegisterCompleteButtonEvent(UnityEvent onClickEvent)
+        {
+            m_View.CompleteButton.onClick.RemoveAllListeners();
+            m_View.CompleteButton.onClick.AddListener(()=>{
+                onClickEvent.Invoke();
+                m_CompleteTutorial.Invoke();
             });
         }
 
@@ -244,6 +258,7 @@ namespace Excellcube.EasyTutorial
         {
             m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
             FitUnmaskToMaskImage(maskImageRT);
+            FitTutorialButtonToMaskImage(maskImageRT);
             ShowIndicator(maskImageRT, indicatorPosition);
         }
 
@@ -287,6 +302,21 @@ namespace Excellcube.EasyTutorial
             // float endScale = maskImageScale.x;
 
             // unmaskRT.localScale = new Vector3(endScale, endScale, endScale);
+        }
+
+        private void FitTutorialButtonToMaskImage(RectTransform maskImageRT)
+        {
+            Transform completeButtonTrans = m_View.CompleteButton.transform;
+            completeButtonTrans.position = maskImageRT.transform.position;
+            completeButtonTrans.rotation = maskImageRT.transform.rotation;
+            completeButtonTrans.localScale = maskImageRT.transform.localScale;
+
+            RectTransform completeButtonRT = m_View.CompleteButton.GetComponent<RectTransform>();
+            
+            completeButtonRT.anchorMin = maskImageRT.anchorMin;
+            completeButtonRT.anchorMax = maskImageRT.anchorMax;
+            completeButtonRT.anchoredPosition = maskImageRT.anchoredPosition;
+            completeButtonRT.sizeDelta = maskImageRT.sizeDelta;
         }
 
         private void SavePrevLayerIds(MeshRenderer[] meshRenderers)

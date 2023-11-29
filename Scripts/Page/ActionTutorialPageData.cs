@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Excellcube.EasyTutorial
 {
@@ -68,5 +69,11 @@ namespace Excellcube.EasyTutorial
         [SerializeField]
         private ConditionKey m_ConditionKey;
         public ConditionKey conditionKey => m_ConditionKey;
+
+        // ConditionKey가 PressButton일때 사용되는 이벤트.
+        // 투명한 버튼을 눌렀을때 실행되는 메서드.
+        [SerializeField]
+        private UnityEvent m_OnClickButton;
+        public UnityEvent onClickButton => m_OnClickButton;
     }
 }
