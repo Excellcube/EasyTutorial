@@ -75,5 +75,10 @@ namespace Excellcube.EasyTutorial
         [SerializeField]
         private UnityEvent m_OnClickButton;
         public UnityEvent onClickButton => m_OnClickButton;
+
+        // ConditionKey가 ListenEvent일 때 사용되는 키 값.
+        [SerializeField]
+        private string m_FinishEventKey;
+        public string finishEventKey => m_FinishEventKey;
     }
 }

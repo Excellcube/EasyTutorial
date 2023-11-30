@@ -14,5 +14,10 @@ namespace Excellcube.EasyTutorial {
         {
             Debug.Log("두 번째 버튼 터치");
         }
+
+        public void BroadcastCompleteEvent()
+        {
+            Tutorial.Complete("EventComplete");
+        }
     }
 }

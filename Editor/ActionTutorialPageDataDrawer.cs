@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.Properties;
 
 namespace Excellcube.EasyTutorial
 {
@@ -29,7 +30,7 @@ namespace Excellcube.EasyTutorial
 
             DrawTitleLabel();
 
-            EditorGUI.indentLevel = 1;
+            EditorGUI.indentLevel++;
             {
                 DrawStartDelay(property);
                 DrawActionLog(property);
@@ -37,7 +38,7 @@ namespace Excellcube.EasyTutorial
                 DrawConditionKey(property);
                 DrawEventArea(property);
             }
-            EditorGUI.indentLevel = 0;
+            EditorGUI.indentLevel--;
 
             EditorGUI.EndProperty();
 
@@ -98,7 +99,7 @@ namespace Excellcube.EasyTutorial
 
             EditorGUI.PropertyField(m_Position, indicatorPositionProp, new GUIContent("화살표 위치"));
             m_Position.y += EditorGUI.GetPropertyHeight(indicatorPositionProp, true);
-            m_Position.y += 2.0f;
+            m_Position.y += 3.0f;
         }
 
         private void DrawConditionKey(SerializedProperty property) {
@@ -107,7 +108,9 @@ namespace Excellcube.EasyTutorial
             EditorGUI.PropertyField(m_Position, conditionKeyProp, new GUIContent("페이지 완료 조건"));
 
             m_Position.y += EditorGUI.GetPropertyHeight(conditionKeyProp, true);
-            m_Position.y += 10.0f;
+            m_Position.y += 3.0f;
+
+            EditorGUI.indentLevel++;
 
             switch(conditionKeyProp.enumValueIndex)
             {
@@ -118,7 +121,12 @@ namespace Excellcube.EasyTutorial
                 case 1 :
                     DrawConditionPressButtonEvent(property);
                     break;
+                case 2 : 
+                    DrawConditionListenEvent(property);
+                    break;
             }
+
+            EditorGUI.indentLevel--;
         }
 
         private void DrawConditionPressButtonEvent(SerializedProperty property) {
@@ -127,6 +135,15 @@ namespace Excellcube.EasyTutorial
             EditorGUI.PropertyField(m_Position, onClickProp);
 
             m_Position.y += EditorGUI.GetPropertyHeight(onClickProp, true);
+            m_Position.y += 3.0f;
+        }
+
+        private void DrawConditionListenEvent(SerializedProperty property) {
+            var finishEventProp = property.FindPropertyRelative(Field.FinishEventKey);
+
+            EditorGUI.PropertyField(m_Position, finishEventProp);
+
+            m_Position.y += EditorGUI.GetPropertyHeight(finishEventProp, true);
             m_Position.y += 3.0f;
         }
 

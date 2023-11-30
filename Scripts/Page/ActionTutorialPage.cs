@@ -59,6 +59,9 @@ namespace Excellcube.EasyTutorial
                 case ConditionKey.PressButton :
                     ConsistPressButtonTutorial(data);
                     break;
+                case ConditionKey.ListenEvent :
+                    ConsisteListenEventTutorial(data);
+                    break;
             }
         }
 
@@ -68,10 +71,8 @@ namespace Excellcube.EasyTutorial
         private void ConsistTapScreenTutorial(ActionTutorialPageData data)
         {
             m_View.ActionLogText.text = data.ActionLog;
-            m_View.TapScreenTarget.gameObject.SetActive(true);
-            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
-            m_View.Indicator.gameObject.SetActive(false);
-            m_View.CompleteButton.gameObject.SetActive(false);
+
+            InitTapScreenUI();
 
             m_View.AddClickAction(TouchView);
         }
@@ -92,11 +93,10 @@ namespace Excellcube.EasyTutorial
 
         private void ConsistPressButtonTutorial(ActionTutorialPageData data)
         {
+            m_View.ActionLogText.text = data.ActionLog;
+
             // TapScreen 반응 영역 비활성화.
-            m_View.TapScreenTarget.gameObject.SetActive(false);
-            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
-            m_View.Indicator.gameObject.SetActive(true);
-            m_View.CompleteButton.gameObject.SetActive(true);
+            InitPressButtonUI();
 
             // CompleteButton 이벤트 등록.
             RegisterCompleteButtonEvent(data.onClickButton);
@@ -123,17 +123,6 @@ namespace Excellcube.EasyTutorial
                 m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
                 m_View.Indicator.gameObject.SetActive(false);
             }
-
-            // 튜토리얼 페이지 완료 조건에 해당하는 이벤트 등록.
-            // TutorialEvent.Instance.Listen(data.conditionKey.ToString(), this, ()=>{
-            //     TutorialEvent.Instance.UnlistenAll();
-            //     if(m_CompleteTutorial == null)
-            //     {
-            //         Debug.LogError("[ActionTutorialPage] CompleteTutorial UnityAction isn't assigned!");
-            //     }
-            //     LoadPrevLayerIds(data.HighlightTarget);
-            //     m_CompleteTutorial();
-            // });
         }
 
         private void RegisterCompleteButtonEvent(UnityEvent onClickEvent)
@@ -382,6 +371,58 @@ namespace Excellcube.EasyTutorial
         }
         
 #endregion
+
+
+#region -- Listen Event 튜토리얼 구성 --
+
+        private void ConsisteListenEventTutorial(ActionTutorialPageData data)
+        {
+            m_View.ActionLogText.text = data.ActionLog;
+            
+            InitListenEventUI();
+
+            // 튜토리얼 페이지 완료 조건 이벤트 등록.
+            RegisterFinishEvent(data);
+        }
+
+        private void RegisterFinishEvent(ActionTutorialPageData data)
+        {
+            TutorialEvent.Instance.Listen(data.finishEventKey.ToString(), this, ()=>{
+                TutorialEvent.Instance.UnlistenAll();
+                if(m_CompleteTutorial == null)
+                {
+                    Debug.LogError("[ActionTutorialPage] CompleteTutorial UnityAction isn't assigned!");
+                }
+                LoadPrevLayerIds(data.HighlightTarget);
+                m_CompleteTutorial();
+            });
+        }
+
+#endregion
+
+        private void InitTapScreenUI()
+        {
+            m_View.TapScreenTarget.gameObject.SetActive(true);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
+            m_View.Indicator.gameObject.SetActive(false);
+            m_View.CompleteButton.gameObject.SetActive(false);
+        }
+
+        private void InitPressButtonUI()
+        {
+            // TapScreen 반응 영역 비활성화.
+            m_View.TapScreenTarget.gameObject.SetActive(false);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(true);
+            m_View.Indicator.gameObject.SetActive(true);
+            m_View.CompleteButton.gameObject.SetActive(true);
+        }
+
+        private void InitListenEventUI() {
+            m_View.TapScreenTarget.gameObject.SetActive(false);
+            m_View.UnmaskPanel.transform.parent.gameObject.SetActive(false);
+            m_View.Indicator.gameObject.SetActive(false);
+            m_View.CompleteButton.gameObject.SetActive(false);
+        }
 
     }
 }

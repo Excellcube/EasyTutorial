@@ -35,6 +35,10 @@ namespace Excellcube
             EasyTutorial.TutorialEvent.Instance.Broadcast(key.ToString());
         }
 
+        public static void Complete(string key) {
+            EasyTutorial.TutorialEvent.Instance.Broadcast(key);
+        }
+
         public static int GetValue(string key) {
             int result;
             if(m_KeyValues.TryGetValue(key, out result)) {
