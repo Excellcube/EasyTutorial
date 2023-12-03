@@ -773,6 +773,7 @@ MonoBehaviour:
   m_UseLocalization: 0
   m_TextLocalizer: {fileID: 0}
   m_LocalizationTable: 
+  m_StartStepNum: 1
   m_CurrTutorialIndex: -1
   m_TutorialPageMakers: []
 --- !u!1 &5810936324218589148
@@ -1604,9 +1605,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 360, y: -631}
+  m_AnchoredPosition: {x: 360, y: -693.6013}
   m_SizeDelta: {x: 125.2026, y: 125.2026}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &5810936325683477911
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1635,7 +1636,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 17f277506d457495bb0b4978ae7a7630, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dba5a6bc78d98477487f34b6fe25a76e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

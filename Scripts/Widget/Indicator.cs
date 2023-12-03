@@ -38,59 +38,45 @@ namespace Excellcube.EasyTutorial
         /// Indicator를 target에 배치. 화면 중앙을 기준으로 target을 향해 indicator가 배치 된다.
         /// </summary>
         /// <param name="target"></param>
-        public void Place(RectTransform target)
+        public void Place(RectTransform target, IndicatorPosition indicatorPosition)
         {
             m_TargetRT = target;
 
-            float targetWidth = target.sizeDelta.x;
-            float targetHeight = target.sizeDelta.y;
-            float indicatorHeight = m_RectTransform.sizeDelta.y;
-            float margin = 20;
-
-            float indicatorDestination = (targetHeight / 2 + indicatorHeight / 2 + margin) * target.lossyScale.x;
-
-            // Vector3 position = target.position;
-            // Quaternion rotation = Quaternion.identity;
-            // Vector3 scale;
-
-            // Indicator가 배치 될 때의 방향을 구한다.
-            float canvasWidth  = Screen.width;
-            float canvasHeight = Screen.height;
-
-            Vector2 centerPosition = new Vector2(canvasWidth / 2.0f, canvasHeight / 2.0f);
-            Vector2 targetPosition = new Vector2(target.position.x, target.position.y);
-            Vector3 direction = (targetPosition - centerPosition).normalized;
-            Vector3 indicatorHeadDirection = new Vector2(0, -1);
-            float angle = Vector3.Angle(indicatorHeadDirection, direction);
-
-            if(targetPosition.x < centerPosition.x) 
+            Vector3 newPosition = target.position;
+            Quaternion newRotation = Quaternion.identity;
+            Vector3 marginPosition = Vector3.zero;
+            
+            switch(indicatorPosition)
             {
-                m_RectTransform.rotation = Quaternion.Euler(0, 0, -angle);
+                case IndicatorPosition.TOP :
+                {
+                    newPosition.y += target.sizeDelta.y * 0.5f;
+                    newRotation = Quaternion.Euler(0, 0, 0);
+                    break;
+                }
+                case IndicatorPosition.BOTTOM :
+                {
+                    newPosition.y -= target.sizeDelta.y * 0.5f;
+                    newRotation = Quaternion.Euler(0, 0, 180);
+                    break;
+                }
+                case IndicatorPosition.RIGHT :
+                {
+                    newPosition.x += target.sizeDelta.x * 0.5f;
+                    newRotation = Quaternion.Euler(0, 0, -90);
+                    break;
+                }
+                case IndicatorPosition.LEFT :
+                {
+                    newPosition.x -= target.sizeDelta.x * 0.5f;
+                    newRotation = Quaternion.Euler(0, 0, 90);
+                    break;
+                }
             }
-            else
-            {
-                m_RectTransform.rotation = Quaternion.Euler(0, 0, angle);
-            }
 
-            m_RectTransform.position = targetPosition;
-
-            // if(placeOnRight)
-            // {
-            //     position.x += indicatordist;
-            //     position.y -= indicatordist;
-            //     scale = Vector3.one;
-            // }
-            // else
-            // {
-            //     position.x -= indicatordist;
-            //     position.y -= indicatordist;
-            //     scale = new Vector3(-1, 1, 1);
-            // }
-
-            // m_RectTransform.gameObject.SetActive(true);
-            // m_RectTransform.position = position;
-            // m_RectTransform.localRotation = rotation;
-
+            m_RectTransform.gameObject.SetActive(true);
+            m_RectTransform.position = newPosition;
+            m_RectTransform.localRotation = newRotation;
             // m_RectTransform.localScale = scale;
         }
 

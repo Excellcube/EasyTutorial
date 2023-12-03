@@ -257,7 +257,7 @@ namespace Excellcube.EasyTutorial
                 m_View.Indicator.gameObject.SetActive(false);
             } else {
                 m_View.Indicator.gameObject.SetActive(true);
-                m_View.Indicator.Place(maskImageRT);
+                m_View.Indicator.Place(maskImageRT, indicatorPosition);
                 m_View.Indicator.Show(maskImageRT);
             }
         }
