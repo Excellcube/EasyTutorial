@@ -153,11 +153,17 @@ namespace Excellcube.EasyTutorial
 
             if(m_FoldOutEvents) {
                 // 이벤트 영역 그리기.
+                var eventStepChangedProp = property.FindPropertyRelative(Field.OnStepChanged);
                 var eventBeginProp   = property.FindPropertyRelative(Field.OnTutorialBegin);
                 var eventInvokedProp = property.FindPropertyRelative(Field.OnTutorialInvoked);
                 var eventEndedProp   = property.FindPropertyRelative(Field.OnTutorialEnded);
 
                 m_Position.y += EditorGUIUtility.singleLineHeight * 1.3f;
+                EditorGUI.PropertyField(m_Position, eventStepChangedProp);
+
+                m_Position.y += EditorGUI.GetPropertyHeight(eventStepChangedProp, true);
+                m_Position.y += 3.0f;
+
                 EditorGUI.PropertyField(m_Position, eventBeginProp);
 
                 m_Position.y += EditorGUI.GetPropertyHeight(eventBeginProp, true);

@@ -13,6 +13,7 @@ namespace Excellcube.EasyTutorial
         private SerializedProperty m_UseLocalizationProp;
         private SerializedProperty m_TextLocalizerProp;
         private SerializedProperty m_LocalizationTableProp;
+        private SerializedProperty m_StartStepNumProp;
         private SerializedProperty m_CurrTutorialIndexProp;
 
         private SerializedProperty m_TutorialPageMakersProp;
@@ -20,6 +21,7 @@ namespace Excellcube.EasyTutorial
         private ReorderableList m_TutorialPageMakersRO;
 
         private bool[] m_FoldoutStates; // 각 요소의 foldout 상태를 추적하는 배열
+        private int m_StepNum = 0;    // OnDrawTutorialDataListItems을 순회하면서 StepIndex를 증가해 할당시키는 역할.
 
 
         private void OnEnable() 
@@ -31,6 +33,7 @@ namespace Excellcube.EasyTutorial
             m_UseLocalizationProp = serializedObject.FindProperty(Field.UseLocalization);
             m_TextLocalizerProp = serializedObject.FindProperty(Field.TextLocalizer);
             m_LocalizationTableProp = serializedObject.FindProperty(Field.LocalizationTable);
+            m_StartStepNumProp = serializedObject.FindProperty(Field.StartStepNum);
             m_CurrTutorialIndexProp = serializedObject.FindProperty(Field.CurrTutorialIndex);
 
             m_TutorialPageMakersProp = serializedObject.FindProperty(Field.TutorialPageMaker);
@@ -62,6 +65,8 @@ namespace Excellcube.EasyTutorial
                 EditorGUI.indentLevel = 0;
             }
 
+            EditorGUILayout.PropertyField(m_StartStepNumProp, new GUIContent("시작 StepNum"));
+
             EditorGUILayout.Space();
 
             DrawTutorialDataList();
@@ -84,17 +89,22 @@ namespace Excellcube.EasyTutorial
 
         private void OnDrawTutorialDataListItems(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var elemProp      = m_TutorialPageMakersRO.serializedProperty.GetArrayElementAtIndex(index);
-            var pageDataProp  = elemProp.FindPropertyRelative(Field.PageData);
-            var pageTypeProp  = elemProp.FindPropertyRelative(Field.PageType);
-            var foldOutProp   = elemProp.FindPropertyRelative(Field.FoldOut);
-            var yPositionProp = elemProp.FindPropertyRelative(Field.PositionY);
-            var pageNameProp  = pageDataProp.FindPropertyRelative(Field.Name);
+            var elemProp        = m_TutorialPageMakersRO.serializedProperty.GetArrayElementAtIndex(index);
+            var pageDataProp    = elemProp.FindPropertyRelative(Field.PageData);
+            var pageTypeProp    = elemProp.FindPropertyRelative(Field.PageType);
+            var foldOutProp     = elemProp.FindPropertyRelative(Field.FoldOut);
+            var yPositionProp   = elemProp.FindPropertyRelative(Field.PositionY);
+            var pageNameProp    = pageDataProp.FindPropertyRelative(Field.Name);
+            var disableStepProp = pageDataProp.FindPropertyRelative(Field.DisableStep);
+            var stepNumProp     = pageDataProp.FindPropertyRelative(Field.StepNum);
 
             DrawCurrTutorialOutline(rect, index);
 
             // -- 페이지 타입에 맞는 색상 설정 -- //
             ChangeBackgroundColor(pageTypeProp.enumValueIndex);
+
+            // -- StepIndex 할당 -- //
+            AssignStepIndex(stepNumProp, index, disableStepProp.boolValue);
 
             // -- Foldout 영역 그리기 -- //
             Rect foldoutRect = rect;
@@ -117,29 +127,21 @@ namespace Excellcube.EasyTutorial
 
             // -- Label 영역 그리기 -- //
 
-            string typeName = pageTypeProp.enumNames[pageTypeProp.enumValueIndex];
-            
-            GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
-            {
-                fontStyle = FontStyle.Bold
-            };
-            GUIContent labelContent = new GUIContent($"{index + 1}. {pageNameProp.stringValue} - {typeName}");
-
-            Rect labelRect = new Rect(foldoutRect.x + 10, foldoutRect.y, rect.width, EditorGUIUtility.singleLineHeight);
-            EditorGUI.LabelField(labelRect, labelContent, labelStyle);
-            
+            DrawLabelField(foldoutRect, pageTypeProp, pageNameProp, disableStepProp, stepNumProp.intValue);
 
             if(m_FoldoutStates[index])
             {
                 // -- 튜토리얼 이름 영역 그리기 -- //
 
-                float labelWidth = EditorGUIUtility.currentViewWidth;
-                float labelHeight = EditorStyles.label.CalcHeight(labelContent, labelWidth);
-
                 rect.y += EditorGUIUtility.singleLineHeight;
                 rect.y += EditorGUIUtility.singleLineHeight * 0.5f;
 
                 EditorGUI.PropertyField(rect, pageNameProp, new GUIContent("튜토리얼 이름"), true);
+
+                rect.y += EditorGUIUtility.singleLineHeight + 2;
+
+                // -- Step 콜백 사용할지 여부 설정 -- //
+                EditorGUI.PropertyField(rect, disableStepProp, new GUIContent("StepNum 증가 비활성화"), true);
             }
 
             yPositionProp.floatValue = rect.y;
@@ -154,6 +156,56 @@ namespace Excellcube.EasyTutorial
             EditorGUI.PropertyField (rect, elemProp);
 
             GUI.color = Color.white;
+        }
+
+        private void AssignStepIndex(SerializedProperty stepIndexProp, int itemIndex, bool disableStepIndex)
+        {
+            // PlayMode에 진입했을때 Editor에서 할당한 값이 적용될 수 있도록 인스턴스에 직접 할당.
+            TutorialPageData pageData = m_Target.tutorialPageMakers[itemIndex].PageData;
+
+            pageData.DisableStep = disableStepIndex;
+
+            if(itemIndex == 0)
+            {
+                m_StepNum = m_StartStepNumProp.intValue - 1;
+            }
+
+            if(!disableStepIndex)
+            {
+                m_StepNum++;
+                stepIndexProp.intValue = m_StepNum;
+                pageData.StepNum = m_StepNum;
+            }
+        }
+
+        private float DrawLabelField(Rect foldoutRect, SerializedProperty pageTypeProp, SerializedProperty pageNameProp, SerializedProperty disableStepProp, int stepNum)
+        {
+            string typeName = pageTypeProp.enumNames[pageTypeProp.enumValueIndex];
+            
+            GUIStyle labelStyle = new GUIStyle(EditorStyles.label)
+            {
+                fontStyle = FontStyle.Bold
+            };
+
+            string labelStr = "";
+
+            if(!disableStepProp.boolValue)
+            {
+                labelStr += $"{stepNum}.";
+            }
+            else
+            {
+                labelStr += "- ";
+            }
+
+            labelStr += $" {pageNameProp.stringValue} - {typeName}";
+
+            GUIContent labelContent = new GUIContent(labelStr);
+
+            Rect labelRect = new Rect(foldoutRect.x + 10, foldoutRect.y, foldoutRect.width, EditorGUIUtility.singleLineHeight);
+            EditorGUI.LabelField(labelRect, labelContent, labelStyle);
+
+            return EditorStyles.label.CalcHeight(labelContent, EditorGUIUtility.currentViewWidth);
         }
 
         private void DrawCurrTutorialOutline(Rect rect, int index)
@@ -204,6 +256,7 @@ namespace Excellcube.EasyTutorial
         public const string PlayOnAwake = "m_PlayOnAwake";
         public const string UseLocalization = "m_UseLocalization";
         public const string TextLocalizer = "m_TextLocalizer";
+        public const string StartStepNum = "m_StartStepNum";
         public const string LocalizationTable = "m_LocalizationTable";
         public const string CurrTutorialIndex = "m_CurrTutorialIndex";
         public const string TutorialPageMaker = "m_TutorialPageMakers";
@@ -211,13 +264,16 @@ namespace Excellcube.EasyTutorial
         public const string DialogPageData = "m_DialogPageData";
         public const string ActionPageData = "m_ActionPageData";
         public const string PageType = "m_PageType";
+        public const string StepNum = "m_StepNum";
         public const string FoldOut = "m_FoldOut";
         public const string PositionY = "m_PositionY";
         public const string Name = "m_Name";
+        public const string DisableStep = "m_DisableStep";
 
 
         // -- Tutorial Page Data -- //
         public const string StartDelay         = "m_StartDelay";
+        public const string OnStepChanged      = "m_OnStepChanged";
         public const string OnTutorialBegin    = "m_OnTutorialBegin";
         public const string OnTutorialInvoked  = "m_OnTutorialInvoked";
         public const string OnTutorialEnded    = "m_OnTutorialEnded";

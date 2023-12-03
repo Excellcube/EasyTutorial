@@ -75,6 +75,9 @@ namespace Excellcube.EasyTutorial
         [SerializeField]
         private string m_LocalizationTable;
 
+        [SerializeField]
+        private int m_StartStepNum = 1;
+
         private int m_LastClearIndex;
         [SerializeField]
         private int m_CurrTutorialIndex = -1;
@@ -85,6 +88,8 @@ namespace Excellcube.EasyTutorial
 
         [SerializeField]
         private List<TutorialPageMaker> m_TutorialPageMakers;
+        public  List<TutorialPageMaker> tutorialPageMakers => m_TutorialPageMakers;
+        
         private TutorialProgress m_TutorialProgress;
 
         private DialogTutorialPage m_DialogTutorialPage;
@@ -192,6 +197,9 @@ namespace Excellcube.EasyTutorial
                 yield break;
             }
 
+            // 튜토리얼에 진입했을때 Step Changed 이벤트 호출.
+            InvokeOnStepChanged();
+
             // 딜레이 시간 동안 터치 제한.
             m_TouchBlockView.gameObject.SetActive(true);
             
@@ -223,6 +231,15 @@ namespace Excellcube.EasyTutorial
                 m_CurrTutorialData = m_TutorialPageMakers[i].PageData;
 
                 break;
+            }
+        }
+
+        private void InvokeOnStepChanged()
+        {
+            if(!m_CurrTutorialData.DisableStep)
+            {
+                int currTutorialStep = m_CurrTutorialData.StepNum;
+                m_CurrTutorialData.OnStepChanged.Invoke(currTutorialStep);
             }
         }
 
@@ -296,6 +313,17 @@ namespace Excellcube.EasyTutorial
         public void Complete(ConditionKey key)
         {
             TutorialEvent.Instance.Broadcast(key.ToString());
+        }
+
+
+        public void AddOnStepChangedListener(UnityAction<int> action)
+        {
+            foreach(var pageMaker in m_TutorialPageMakers)
+            {
+                var pageData = pageMaker.PageData;
+                pageData.OnStepChanged.RemoveAllListeners();
+                pageData.OnStepChanged.AddListener((step) => action.Invoke(step));
+            }
         }
     }
 }

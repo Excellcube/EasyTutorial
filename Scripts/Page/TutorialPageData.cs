@@ -12,6 +12,20 @@ namespace Excellcube.EasyTutorial
         private string m_Name;
         public string Name => m_Name;
 
+        [SerializeField]
+        private bool m_DisableStep = false;
+        public  bool DisableStep {
+            get => m_DisableStep;
+            set => m_DisableStep = value;
+        }
+
+        [SerializeField]
+        protected int m_StepNum;
+        public int StepNum {
+            get => m_StepNum;
+            set => m_StepNum = value;
+        }
+
         protected bool m_UseLocalization;
         public  bool UseLocalization 
         {
@@ -36,6 +50,14 @@ namespace Excellcube.EasyTutorial
         [SerializeField]
         private float m_StartDelay;  // second 단위의 대기 시간 입력.
         public  float StartDelay => m_StartDelay;
+
+        
+        /// <summary>
+        /// Step Num이 변경될 때 호출되는 이벤트.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent<int> m_OnStepChanged;
+        public UnityEvent<int> OnStepChanged => m_OnStepChanged;
 
 
         /// <summary>
